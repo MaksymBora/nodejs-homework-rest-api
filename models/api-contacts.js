@@ -3,15 +3,16 @@ import { nanoid } from 'nanoid';
 import path from 'path';
 import 'colors';
 
-const contactsPath = path.resolve('./db/contacts.json');
+const contactsPath = path.resolve('./models/contacts.json');
 
 export async function listContacts() {
   try {
     const data = await fs.readFile(contactsPath, 'utf-8');
-
-    return JSON.parse(data);
+    const contacts = JSON.parse(data);
+    return contacts;
   } catch (error) {
-    console.log(error.red);
+    console.error('Error in listContacts:', error);
+    throw error;
   }
 }
 

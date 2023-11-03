@@ -1,5 +1,9 @@
 import { Router } from 'express';
-import { getContactById, listContacts } from '../../models/api-contacts.js';
+import {
+  addContact,
+  getContactById,
+  listContacts,
+} from '../../models/api-contacts.js';
 
 const router = Router();
 
@@ -19,9 +23,17 @@ router.get('/:contactId', async (req, res, next) => {
   }
 });
 
-// router.post('/', async (req, res, next) => {
-//   res.json({ message: 'template message' });
-// });
+router.post('/', async (req, res, next) => {
+  // res.send({ data: req.body });
+  // console.log(req.body);
+
+  const contact = await addContact(req.body);
+  if (contact) {
+    res.status(200).json(contact);
+  } else {
+    res.status(400).json({ message: 'missing required fields' });
+  }
+});
 
 // router.delete('/:contactId', async (req, res, next) => {
 //   res.json({ message: 'template message' });

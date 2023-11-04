@@ -20,6 +20,6 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
-    'eslint-disable no-unused-vars': off,
+    'no-unused-vars': 'off',
   },
 };

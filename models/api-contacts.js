@@ -5,6 +5,7 @@ import 'colors';
 
 const contactsPath = path.resolve('./models/contacts.json');
 
+// Get full list of contacts
 export async function listContacts() {
   try {
     const data = await fs.readFile(contactsPath, 'utf-8');
@@ -18,6 +19,7 @@ export async function listContacts() {
   }
 }
 
+// Get contact by ID
 export async function getContactById(contactId) {
   try {
     const data = await listContacts();
@@ -28,6 +30,7 @@ export async function getContactById(contactId) {
   }
 }
 
+// Delete existed contact
 export async function removeContact(contactId) {
   try {
     const data = await listContacts();
@@ -49,6 +52,7 @@ export async function removeContact(contactId) {
   }
 }
 
+// Add new contact
 export async function addContact(contactData) {
   try {
     const contacts = await listContacts();
@@ -69,6 +73,7 @@ export async function addContact(contactData) {
   }
 }
 
+// Update existed contact
 export const updateContact = async (id, contactData) => {
   const contacts = await listContacts();
   const index = contacts.findIndex(contact => contact.id === id);

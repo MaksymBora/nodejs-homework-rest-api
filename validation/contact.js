@@ -5,3 +5,9 @@ export const contactSchema = joi.object({
   email: joi.string().required(),
   phone: joi.string().required(),
 });
+
+const contactValidator = schema => data => {
+  return schema.validate(data, { abortEarly: false });
+};
+
+export const contactValidate = contactValidator(contactSchema);

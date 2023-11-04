@@ -6,13 +6,15 @@ import {
   removeContact,
   updateContact,
 } from '../../models/api-contacts.js';
-import { contactSchema } from '../../validation/contact.js';
+import { contactValidate } from '../../validation/contact.js';
 
 const router = Router();
 
+// Get all contacts
 router.get('/', async (req, res, next) => {
   try {
     const contacts = await listContacts();
+
     if (!contacts) return next();
     res.status(200).json(contacts);
   } catch (error) {
@@ -20,31 +22,35 @@ router.get('/', async (req, res, next) => {
   }
 });
 
+// Get contact by ID
 router.get('/:contactId', async (req, res, next) => {
   const { contactId } = req.params;
 
   const contact = await getContactById(contactId);
+
   if (!contact) return next();
+
   res.status(200).json(contact);
 });
 
 // Add new Contact
 router.post('/', async (req, res) => {
-  const response = contactSchema.validate(req.body, { abortEarly: false });
+  const { error } = contactValidate(req.body);
 
-  if (typeof response.error !== 'undefined') {
+  if (typeof error !== 'undefined') {
     return res
       .status(400)
-      .send(response.error.details.map(err => err.message).join(', '));
+      .send(error.details.map(err => err.message).join(', '));
   }
 
-  const contact = await addContact(response.value);
+  const contact = await addContact(req.body);
 
   if (!contact) res.status(400).json({ message: 'missing required fields' });
 
   res.status(201).json(contact);
 });
 
+// Delete Contact
 router.delete('/:contactId', async (req, res) => {
   const { contactId } = req.params;
 
@@ -55,6 +61,7 @@ router.delete('/:contactId', async (req, res) => {
   res.status(200).json(contact);
 });
 
+// Update contact's information
 router.put('/:contactId', async (req, res, next) => {
   const { contactId } = req.params;
 

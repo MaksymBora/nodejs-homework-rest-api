@@ -8,7 +8,9 @@ const contactsPath = path.resolve('./models/contacts.json');
 export async function listContacts() {
   try {
     const data = await fs.readFile(contactsPath, 'utf-8');
+
     const contacts = JSON.parse(data);
+
     return contacts;
   } catch (error) {
     console.error('Error in listContacts:', error);
@@ -19,6 +21,7 @@ export async function listContacts() {
 export async function getContactById(contactId) {
   try {
     const data = await listContacts();
+
     return data.find(contact => contact.id === contactId) || null;
   } catch (error) {
     console.log(error.red);
@@ -28,7 +31,9 @@ export async function getContactById(contactId) {
 export async function removeContact(contactId) {
   try {
     const data = await listContacts();
+
     const UpdatedContacts = data.filter(({ id }) => id !== contactId);
+
     await fs.writeFile(
       contactsPath,
       JSON.stringify(UpdatedContacts, null, 2),
@@ -47,12 +52,14 @@ export async function removeContact(contactId) {
 export async function addContact(name, email, phone) {
   try {
     const contacts = await listContacts();
+
     const newContact = {
       id: nanoid(),
       name,
       email,
       phone,
     };
+
     const updatedContacts = [newContact, ...contacts];
     await fs.writeFile(contactsPath, JSON.stringify(updatedContacts, null, 2), {
       encoding: 'utf-8',

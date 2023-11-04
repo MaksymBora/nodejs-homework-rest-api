@@ -3,7 +3,6 @@ import logger from 'morgan';
 import cors from 'cors';
 import contactsRouter from './routes/api/contacts.js';
 import 'colors';
-import morgan from 'morgan';
 
 const app = express();
 

@@ -31,7 +31,7 @@ router.post('/', async (req, res) => {
 
   const contact = await addContact(req.body);
   if (contact) {
-    res.status(200).json(contact);
+    res.status(201).json(contact);
   } else {
     res.status(400).json({ message: 'missing required fields' });
   }
@@ -56,7 +56,7 @@ router.put('/:contactId', async (req, res) => {
   if (contact) {
     res.status(200).json(contact);
   } else {
-    res.status(400).json({ message: 'missing required fileds' });
+    res.status(400).json({ message: 'Not found' });
   }
 });
 

@@ -64,6 +64,12 @@ router.delete('/:contactId', async (req, res) => {
 // Update contact's information
 router.put('/:contactId', async (req, res, next) => {
   const { contactId } = req.params;
+  const { error } = contactValidate(req.body);
+  if (typeof error !== 'undefined') {
+    return res
+      .status(400)
+      .send(error.details.map(err => err.message).join(', '));
+  }
 
   const contact = await updateContact(contactId, req.body);
 

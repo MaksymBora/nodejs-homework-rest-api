@@ -1,9 +1,28 @@
+/* eslint-disable no-undef */
 import { promises as fs } from 'fs';
 import { nanoid } from 'nanoid';
 import path from 'path';
 import 'colors';
+import mongoose from 'mongoose';
 
 const contactsPath = path.resolve('./models/contacts.json');
+
+// Connect to MongoDB
+
+const DB_URI = process.env['DB_URI'];
+
+async function connectDB() {
+  try {
+    await mongoose.connect(DB_URI);
+    console.log('Database connection successful');
+  } catch (error) {
+    console.error(error);
+  } finally {
+    await mongoose.disconnect();
+  }
+}
+
+connectDB().catch(console.error);
 
 // Get full list of contacts
 export async function listContacts() {

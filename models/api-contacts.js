@@ -86,6 +86,7 @@ async function updateContact(req, res, next) {
 
 export const updateById = ctrlWrapper(updateContact);
 
+// Update contact Status by ID
 async function updateStatusContact(req, res, next) {
   const { contactId } = req.params;
 
@@ -110,23 +111,35 @@ async function updateStatusContact(req, res, next) {
 export const updateFavorite = ctrlWrapper(updateStatusContact);
 
 // Delete existed contact
-export async function removeContact(contactId) {
-  try {
-    const data = await listContacts();
+// export async function removeContact(contactId) {
+//   try {
+//     const data = await listContacts();
 
-    const UpdatedContacts = data.filter(({ id }) => id !== contactId);
+//     const UpdatedContacts = data.filter(({ id }) => id !== contactId);
 
-    await fs.writeFile(
-      contactsPath,
-      JSON.stringify(UpdatedContacts, null, 2),
-      'utf-8',
-    );
+//     await fs.writeFile(
+//       contactsPath,
+//       JSON.stringify(UpdatedContacts, null, 2),
+//       'utf-8',
+//     );
 
-    const deletedContact =
-      data.find(contact => contactId === contact.id) || null;
+//     const deletedContact =
+//       data.find(contact => contactId === contact.id) || null;
 
-    return deletedContact;
-  } catch (error) {
-    console.log(error.red);
-  }
+//     return deletedContact;
+//   } catch (error) {
+//     console.log(error.red);
+//   }
+// }
+
+async function removeContact(req, res) {
+  const { contactId } = req.params;
+
+  const contact = await Contact.findByIdAndDelete(contactId);
+
+  if (!contact) res.status(400).json({ message: 'missing required fields' });
+
+  res.status(200).json(contact);
 }
+
+export const removeContactById = ctrlWrapper(removeContact);

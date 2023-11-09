@@ -3,7 +3,7 @@ import {
   add,
   getAll,
   getById,
-  removeContact,
+  removeContactById,
   updateById,
   updateFavorite,
 } from '../../models/api-contacts.js';
@@ -23,18 +23,10 @@ router.post('/', add);
 // Update contact's information
 router.put('/:contactId', isValidId, updateById);
 
-// Update favorite flag
+// Update contact Status by ID
 router.patch('/:contactId/favorite', isValidId, updateFavorite);
 
 // Delete Contact
-router.delete('/:contactId', async (req, res) => {
-  const { contactId } = req.params;
-
-  const contact = await removeContact(contactId);
-
-  if (!contact) res.status(400).json({ message: 'missing required fields' });
-
-  res.status(200).json(contact);
-});
+router.delete('/:contactId', isValidId, removeContactById);
 
 export default router;

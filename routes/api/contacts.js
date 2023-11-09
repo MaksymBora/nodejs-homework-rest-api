@@ -6,26 +6,15 @@ import {
   removeContact,
   updateContact,
 } from '../../models/api-contacts.js';
-import { contactValidate } from '../../validation/contact.js';
+import { contactValidate } from '../../models/contact.js';
+import { isValidId } from '../../helpers/isValidId.js';
 
 const router = Router();
-
-// Get all contacts
-// router.get('/', async (req, res, next) => {
-//   try {
-//     const contacts = await listContacts();
-
-//     if (!contacts) return next();
-//     res.status(200).json(contacts);
-//   } catch (error) {
-//     next(error);
-//   }
-// });
 
 router.get('/', getAll);
 
 // Get contact by ID
-router.get('/:contactId', getById);
+router.get('/:contactId', isValidId, getById);
 
 // Add new Contact
 router.post('/', add);

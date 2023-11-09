@@ -1,10 +1,9 @@
 /* eslint-disable no-undef */
 import mongoose from 'mongoose';
-import { Contact } from './contact.js';
+import { Contact, contactValidate } from './contact.js';
 import path from 'path';
 import 'colors';
 import { ctrlWrapper } from '../helpers/ctrlWrapper.js';
-import { contactValidate } from '../validation/contact.js';
 
 const contactsPath = path.resolve('./models/contacts.json');
 
@@ -25,24 +24,14 @@ connectDB().catch(console.error);
 
 // Get full list of contacts
 async function listContacts(_, res) {
-  const data = await Contact.find();
+  const data = await Contact.find({}, '-createdAt -updatedAt');
   res.json(data);
 }
 
 export const getAll = ctrlWrapper(listContacts);
 
-// Get contact by ID
-// export async function getContactById(contactId) {
-//   try {
-//     const data = await listContacts();
-
-//     return data.find(contact => contact.id === contactId) || null;
-//   } catch (error) {
-//     console.log(error.red);
-//   }
-// }
-
-async function getContactById(req, res, next) {
+//Get contact by ID
+async function getContactById(req, res) {
   const { contactId } = req.params;
 
   const contact = await Contact.findById(contactId);
@@ -53,17 +42,6 @@ async function getContactById(req, res, next) {
 }
 
 export const getById = ctrlWrapper(getContactById);
-
-// Add new contact
-// export async function addContact(contactData) {
-//   try {
-//     const result = await Contact.create(contactData);
-
-//     return result;
-//   } catch (error) {
-//     console.log(error.red);
-//   }
-// }
 
 // Add new contact
 async function addContact(req, res) {

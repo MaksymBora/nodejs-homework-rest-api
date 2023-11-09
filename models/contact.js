@@ -36,6 +36,11 @@ export const contactSchemaJoi = joi.object({
   favorite: joi.boolean().default(false),
 });
 
+const updateFavoriteSchema = joi.object({
+  favorite: joi.boolean().required(),
+});
+
 export const contactValidate = contactValidator(contactSchemaJoi);
+export const favoriteValidate = contactValidator(updateFavoriteSchema);
 
 export const Contact = model('contact', contactSchema);

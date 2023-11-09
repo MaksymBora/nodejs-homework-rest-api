@@ -1,9 +1,10 @@
 /* eslint-disable no-undef */
 import mongoose from 'mongoose';
-import { Contact, contactValidate } from './contact.js';
+import { Contact, contactValidate, favoriteValidate } from './contact.js';
 import path from 'path';
 import 'colors';
 import { ctrlWrapper } from '../helpers/ctrlWrapper.js';
+import { contactValidator } from '../helpers/contactValidatorWrapper.js';
 
 const contactsPath = path.resolve('./models/contacts.json');
 
@@ -61,6 +62,53 @@ async function addContact(req, res) {
 
 export const add = ctrlWrapper(addContact);
 
+// Update existed contact
+async function updateContact(req, res, next) {
+  const { contactId } = req.params;
+
+  const { error } = contactValidator(req.body);
+
+  if (typeof error !== 'undefined') {
+    const errorMessages = error.details.map(
+      err => `missing field: ${err.message}`,
+    );
+    return res.status(400).json({ messages: errorMessages });
+  }
+
+  const contact = await Contact.findByIdAndUpdate(contactId, req.body, {
+    new: true,
+  });
+
+  if (!contact) return next();
+
+  res.status(200).json(contact);
+}
+
+export const updateById = ctrlWrapper(updateContact);
+
+async function updateStatusContact(req, res, next) {
+  const { contactId } = req.params;
+
+  const { error } = favoriteValidate(req.body);
+
+  if (typeof error !== 'undefined') {
+    const errorMessages = error.details.map(
+      err => `missing field: ${err.message}`,
+    );
+    return res.status(400).json({ messages: errorMessages });
+  }
+
+  const contact = await Contact.findByIdAndUpdate(contactId, req.body, {
+    new: true,
+  });
+
+  if (!contact) return next();
+
+  res.status(200).json(contact);
+}
+
+export const updateFavorite = ctrlWrapper(updateStatusContact);
+
 // Delete existed contact
 export async function removeContact(contactId) {
   try {
@@ -82,27 +130,3 @@ export async function removeContact(contactId) {
     console.log(error.red);
   }
 }
-
-// Update existed contact
-export const updateContact = async (id, contactData) => {
-  const contacts = await listContacts();
-  const index = contacts.findIndex(contact => contact.id === id);
-
-  if (index === -1) {
-    return undefined;
-  }
-
-  const newContact = { ...contactData, id };
-
-  const updatedContacts = [
-    ...contacts.slice(0, index),
-    newContact,
-    ...contacts.slice(index + 1),
-  ];
-
-  await fs.writeFile(contactsPath, JSON.stringify(updatedContacts, null, 2), {
-    encoding: 'utf-8',
-  });
-
-  return newContact;
-};

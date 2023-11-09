@@ -49,11 +49,7 @@ export async function getContactById(contactId) {
 // Add new contact
 export async function addContact(contactData) {
   try {
-    const newContact = {
-      ...contactData,
-    };
-
-    const result = await Contact.create(newContact);
+    const result = await Contact.create(contactData);
 
     return result;
   } catch (error) {

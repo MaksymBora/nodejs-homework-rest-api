@@ -7,6 +7,7 @@ import {
   updateContact,
 } from '../../models/api-contacts.js';
 import { contactValidate } from '../../validation/contact.js';
+import { Contact } from '../../models/contact.js';
 
 const router = Router();
 
@@ -34,20 +35,28 @@ router.get('/:contactId', async (req, res, next) => {
 });
 
 // Add new Contact
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
   const { error } = contactValidate(req.body);
 
-  if (typeof error !== 'undefined') {
-    return res
-      .status(400)
-      .send(error.details.map(err => err.message).join(', '));
+  // if (typeof error !== 'undefined') {
+  //   return res
+  //     .status(400)
+  //     .send(error.details.map(err => err.message).join(', '));
+  // }
+
+  // const contact = await addContact(req.body);
+
+  // if (!contact) res.status(400).json({ message: 'missing required fields' });
+
+  // const contact = await addContact(req.body);
+  // res.status(201).json(contact);
+
+  try {
+    const contact = await Contact.create(req.body);
+    res.status(201).json(contact);
+  } catch (error) {
+    next(error);
   }
-
-  const contact = await addContact(req.body);
-
-  if (!contact) res.status(400).json({ message: 'missing required fields' });
-
-  res.status(201).json(contact);
 });
 
 // Delete Contact

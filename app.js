@@ -20,10 +20,12 @@ app.use((_, res) => {
 });
 
 app.use((err, _, res, __) => {
-  console.log('Error Here!'.red);
-  console.error(err);
+  // console.log('Error Here!'.red);
+  // console.error(err);
 
-  res.status(500).json({ message: 'Internal Server Error' });
+  const { status = 500, message = 'Internal Server Error' } = err;
+
+  res.status(status).json({ message });
 });
 
 export default app;

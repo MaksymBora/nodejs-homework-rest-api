@@ -4,6 +4,7 @@ import { Contact } from './contact.js';
 import path from 'path';
 import 'colors';
 import { ctrlWrapper } from '../helpers/ctrlWrapper.js';
+import { contactValidate } from '../validation/contact.js';
 
 const contactsPath = path.resolve('./models/contacts.json');
 
@@ -23,7 +24,7 @@ async function connectDB() {
 connectDB().catch(console.error);
 
 // Get full list of contacts
-export async function listContacts(_, res) {
+async function listContacts(_, res) {
   const data = await Contact.find();
   res.json(data);
 }
@@ -41,7 +42,7 @@ export const getAll = ctrlWrapper(listContacts);
 //   }
 // }
 
-export async function getContactById(req, res, next) {
+async function getContactById(req, res, next) {
   const { contactId } = req.params;
 
   const contact = await Contact.findById(contactId);
@@ -63,6 +64,24 @@ export const getById = ctrlWrapper(getContactById);
 //     console.log(error.red);
 //   }
 // }
+
+// Add new contact
+async function addContact(req, res) {
+  const { error } = contactValidate(req.body);
+
+  if (typeof error !== 'undefined') {
+    return res
+      .status(400)
+      .send(error.details.map(err => err.message).join(', '));
+  }
+
+  const contact = await Contact.create(req.body);
+
+  if (!contact) res.status(400).json({ message: 'missing required fields' });
+  res.status(201).json(contact);
+}
+
+export const add = ctrlWrapper(addContact);
 
 // Delete existed contact
 export async function removeContact(contactId) {

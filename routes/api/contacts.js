@@ -1,13 +1,12 @@
 import { Router } from 'express';
 import {
+  add,
   getAll,
   getById,
-  getContactById,
   removeContact,
   updateContact,
 } from '../../models/api-contacts.js';
 import { contactValidate } from '../../validation/contact.js';
-import { Contact } from '../../models/contact.js';
 
 const router = Router();
 
@@ -29,24 +28,7 @@ router.get('/', getAll);
 router.get('/:contactId', getById);
 
 // Add new Contact
-router.post('/', async (req, res, next) => {
-  const { error } = contactValidate(req.body);
-
-  if (typeof error !== 'undefined') {
-    return res
-      .status(400)
-      .send(error.details.map(err => err.message).join(', '));
-  }
-
-  try {
-    const contact = await Contact.create(req.body);
-
-    if (!contact) res.status(400).json({ message: 'missing required fields' });
-    res.status(201).json(contact);
-  } catch (error) {
-    next(error);
-  }
-});
+router.post('/', add);
 
 // Delete Contact
 router.delete('/:contactId', async (req, res) => {

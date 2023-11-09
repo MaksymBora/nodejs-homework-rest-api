@@ -1,84 +1,31 @@
 import { Router } from 'express';
 import {
-  addContact,
-  getContactById,
-  listContacts,
-  removeContact,
-  updateContact,
+  add,
+  getAll,
+  getById,
+  removeContactById,
+  updateById,
+  updateFavorite,
 } from '../../models/api-contacts.js';
-import { contactValidate } from '../../validation/contact.js';
+import { isValidId } from '../../helpers/isValidId.js';
 
 const router = Router();
 
-// Get all contacts
-router.get('/', async (req, res, next) => {
-  try {
-    const contacts = await listContacts();
-
-    if (!contacts) return next();
-    res.status(200).json(contacts);
-  } catch (error) {
-    next(error);
-  }
-});
+router.get('/', getAll);
 
 // Get contact by ID
-router.get('/:contactId', async (req, res, next) => {
-  const { contactId } = req.params;
-
-  const contact = await getContactById(contactId);
-
-  if (!contact) return next();
-
-  res.status(200).json(contact);
-});
+router.get('/:contactId', isValidId, getById);
 
 // Add new Contact
-router.post('/', async (req, res) => {
-  const { error } = contactValidate(req.body);
-
-  if (typeof error !== 'undefined') {
-    return res
-      .status(400)
-      .send(error.details.map(err => err.message).join(', '));
-  }
-
-  const contact = await addContact(req.body);
-
-  if (!contact) res.status(400).json({ message: 'missing required fields' });
-
-  res.status(201).json(contact);
-});
-
-// Delete Contact
-router.delete('/:contactId', async (req, res) => {
-  const { contactId } = req.params;
-
-  const contact = await removeContact(contactId);
-
-  if (!contact) res.status(400).json({ message: 'missing required fields' });
-
-  res.status(200).json(contact);
-});
+router.post('/', add);
 
 // Update contact's information
-router.put('/:contactId', async (req, res, next) => {
-  const { contactId } = req.params;
+router.put('/:contactId', isValidId, updateById);
 
-  const { error } = contactValidate(req.body);
+// Update contact Status by ID
+router.patch('/:contactId/favorite', isValidId, updateFavorite);
 
-  if (typeof error !== 'undefined') {
-    const errorMessages = error.details.map(
-      err => `missing field: ${err.message}`,
-    );
-    return res.status(400).json({ messages: errorMessages });
-  }
-
-  const contact = await updateContact(contactId, req.body);
-
-  if (!contact) return next();
-
-  res.status(200).json(contact);
-});
+// Delete Contact
+router.delete('/:contactId', isValidId, removeContactById);
 
 export default router;

@@ -1,98 +1,103 @@
-import { promises as fs } from 'fs';
-import { nanoid } from 'nanoid';
-import path from 'path';
+/* eslint-disable no-undef */
+import mongoose from 'mongoose';
+import { Contact, contactValidate, favoriteValidate } from './contact.js';
 import 'colors';
-
-const contactsPath = path.resolve('./models/contacts.json');
+import { ctrlWrapper } from '../helpers/ctrlWrapper.js';
+import { contactValidator } from '../helpers/contactValidatorWrapper.js';
 
 // Get full list of contacts
-export async function listContacts() {
-  try {
-    const data = await fs.readFile(contactsPath, 'utf-8');
-
-    const contacts = JSON.parse(data);
-
-    return contacts;
-  } catch (error) {
-    console.error('Error in listContacts:', error);
-    throw error;
-  }
+async function listContacts(_, res) {
+  const data = await Contact.find({}, '-createdAt -updatedAt');
+  res.json(data);
 }
 
-// Get contact by ID
-export async function getContactById(contactId) {
-  try {
-    const data = await listContacts();
+export const getAll = ctrlWrapper(listContacts);
 
-    return data.find(contact => contact.id === contactId) || null;
-  } catch (error) {
-    console.log(error.red);
-  }
+//Get contact by ID
+async function getContactById(req, res) {
+  const { contactId } = req.params;
+
+  const contact = await Contact.findById(contactId);
+
+  if (!contact) throw HttpError(404, 'Contact not found');
+
+  res.json(contact);
 }
 
-// Delete existed contact
-export async function removeContact(contactId) {
-  try {
-    const data = await listContacts();
-
-    const UpdatedContacts = data.filter(({ id }) => id !== contactId);
-
-    await fs.writeFile(
-      contactsPath,
-      JSON.stringify(UpdatedContacts, null, 2),
-      'utf-8',
-    );
-
-    const deletedContact =
-      data.find(contact => contactId === contact.id) || null;
-
-    return deletedContact;
-  } catch (error) {
-    console.log(error.red);
-  }
-}
+export const getById = ctrlWrapper(getContactById);
 
 // Add new contact
-export async function addContact(contactData) {
-  try {
-    const contacts = await listContacts();
+async function addContact(req, res) {
+  const { error } = contactValidate(req.body);
 
-    const newContact = {
-      id: nanoid(),
-      ...contactData,
-    };
-
-    const updatedContacts = [newContact, ...contacts];
-    await fs.writeFile(contactsPath, JSON.stringify(updatedContacts, null, 2), {
-      encoding: 'utf-8',
-    });
-
-    return newContact;
-  } catch (error) {
-    console.log(error.red);
+  if (typeof error !== 'undefined') {
+    return res
+      .status(400)
+      .send(error.details.map(err => err.message).join(', '));
   }
+
+  const contact = await Contact.create(req.body);
+
+  if (!contact) res.status(400).json({ message: 'missing required fields' });
+  res.status(201).json(contact);
 }
 
-// Update existed contact
-export const updateContact = async (id, contactData) => {
-  const contacts = await listContacts();
-  const index = contacts.findIndex(contact => contact.id === id);
+export const add = ctrlWrapper(addContact);
 
-  if (index === -1) {
-    return undefined;
+// Update existed contact
+async function updateContact(req, res, next) {
+  const { contactId } = req.params;
+
+  const { error } = contactValidator(req.body);
+
+  if (typeof error !== 'undefined') {
+    const errorMessages = error.details.map(
+      err => `missing field: ${err.message}`,
+    );
+    return res.status(400).json({ messages: errorMessages });
   }
 
-  const newContact = { ...contactData, id };
-
-  const updatedContacts = [
-    ...contacts.slice(0, index),
-    newContact,
-    ...contacts.slice(index + 1),
-  ];
-
-  await fs.writeFile(contactsPath, JSON.stringify(updatedContacts, null, 2), {
-    encoding: 'utf-8',
+  const contact = await Contact.findByIdAndUpdate(contactId, req.body, {
+    new: true,
   });
 
-  return newContact;
-};
+  if (!contact) return next();
+
+  res.status(200).json(contact);
+}
+
+export const updateById = ctrlWrapper(updateContact);
+
+// Update contact Status by ID
+async function updateStatusContact(req, res, next) {
+  const { contactId } = req.params;
+
+  const { error } = favoriteValidate(req.body);
+
+  if (typeof error !== 'undefined') {
+    return res.status(400).json({ messages: 'missing field favorite' });
+  }
+
+  const contact = await Contact.findByIdAndUpdate(contactId, req.body, {
+    new: true,
+  });
+
+  if (!contact) return next();
+
+  res.status(200).json(contact);
+}
+
+export const updateFavorite = ctrlWrapper(updateStatusContact);
+
+// Delete contact by ID
+async function removeContact(req, res) {
+  const { contactId } = req.params;
+
+  const contact = await Contact.findByIdAndDelete(contactId);
+
+  if (!contact) res.status(400).json({ message: 'missing required fields' });
+
+  res.status(200).json(contact);
+}
+
+export const removeContactById = ctrlWrapper(removeContact);

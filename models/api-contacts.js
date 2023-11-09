@@ -1,10 +1,9 @@
 /* eslint-disable no-undef */
 import mongoose from 'mongoose';
 import { Contact } from './contact.js';
-// import { promises as fs } from 'fs';
-import { nanoid } from 'nanoid';
 import path from 'path';
 import 'colors';
+import { ctrlWrapper } from '../helpers/ctrlWrapper.js';
 
 const contactsPath = path.resolve('./models/contacts.json');
 
@@ -24,16 +23,18 @@ async function connectDB() {
 connectDB().catch(console.error);
 
 // Get full list of contacts
-export async function listContacts() {
-  try {
-    const data = await Contact.find();
+export async function listContacts(_, res) {
+  // try {
+  const data = await Contact.find();
 
-    return data;
-  } catch (error) {
-    console.error('Error in listContacts:', error);
-    throw error;
-  }
+  res.json(data);
+  // } catch (error) {
+  //   console.error('Error in listContacts:', error);
+  //   throw error;
+  // }
 }
+
+export const getAll = ctrlWrapper(listContacts);
 
 // Get contact by ID
 export async function getContactById(contactId) {
@@ -47,15 +48,15 @@ export async function getContactById(contactId) {
 }
 
 // Add new contact
-export async function addContact(contactData) {
-  try {
-    const result = await Contact.create(contactData);
+// export async function addContact(contactData) {
+//   try {
+//     const result = await Contact.create(contactData);
 
-    return result;
-  } catch (error) {
-    console.log(error.red);
-  }
-}
+//     return result;
+//   } catch (error) {
+//     console.log(error.red);
+//   }
+// }
 
 // Delete existed contact
 export async function removeContact(contactId) {

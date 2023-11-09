@@ -1,8 +1,7 @@
 import { Router } from 'express';
 import {
-  addContact,
+  getAll,
   getContactById,
-  listContacts,
   removeContact,
   updateContact,
 } from '../../models/api-contacts.js';
@@ -12,16 +11,18 @@ import { Contact } from '../../models/contact.js';
 const router = Router();
 
 // Get all contacts
-router.get('/', async (req, res, next) => {
-  try {
-    const contacts = await listContacts();
+// router.get('/', async (req, res, next) => {
+//   try {
+//     const contacts = await listContacts();
 
-    if (!contacts) return next();
-    res.status(200).json(contacts);
-  } catch (error) {
-    next(error);
-  }
-});
+//     if (!contacts) return next();
+//     res.status(200).json(contacts);
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+
+router.get('/', getAll);
 
 // Get contact by ID
 router.get('/:contactId', async (req, res, next) => {
@@ -38,21 +39,16 @@ router.get('/:contactId', async (req, res, next) => {
 router.post('/', async (req, res, next) => {
   const { error } = contactValidate(req.body);
 
-  // if (typeof error !== 'undefined') {
-  //   return res
-  //     .status(400)
-  //     .send(error.details.map(err => err.message).join(', '));
-  // }
-
-  // const contact = await addContact(req.body);
-
-  // if (!contact) res.status(400).json({ message: 'missing required fields' });
-
-  // const contact = await addContact(req.body);
-  // res.status(201).json(contact);
+  if (typeof error !== 'undefined') {
+    return res
+      .status(400)
+      .send(error.details.map(err => err.message).join(', '));
+  }
 
   try {
     const contact = await Contact.create(req.body);
+
+    if (!contact) res.status(400).json({ message: 'missing required fields' });
     res.status(201).json(contact);
   } catch (error) {
     next(error);

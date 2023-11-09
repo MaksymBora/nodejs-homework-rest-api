@@ -89,10 +89,7 @@ async function updateStatusContact(req, res, next) {
   const { error } = favoriteValidate(req.body);
 
   if (typeof error !== 'undefined') {
-    const errorMessages = error.details.map(
-      err => `missing field: ${err.message}`,
-    );
-    return res.status(400).json({ messages: errorMessages });
+    return res.status(400).json({ messages: 'missing field favorite' });
   }
 
   const contact = await Contact.findByIdAndUpdate(contactId, req.body, {

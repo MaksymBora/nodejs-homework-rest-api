@@ -5,20 +5,6 @@ import 'colors';
 import { ctrlWrapper } from '../helpers/ctrlWrapper.js';
 import { contactValidator } from '../helpers/contactValidatorWrapper.js';
 
-// Connect to MongoDB
-const DB_URI = process.env['DB_URI'];
-
-async function connectDB() {
-  try {
-    await mongoose.connect(DB_URI);
-    console.log('Database connection successful');
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-connectDB().catch(console.error);
-
 // Get full list of contacts
 async function listContacts(_, res) {
   const data = await Contact.find({}, '-createdAt -updatedAt');
@@ -89,7 +75,7 @@ async function updateStatusContact(req, res, next) {
   const { error } = favoriteValidate(req.body);
 
   if (typeof error !== 'undefined') {
-    return res.status(404).json({ messages: 'missing field favorite' });
+    return res.status(400).json({ messages: 'missing field favorite' });
   }
 
   const contact = await Contact.findByIdAndUpdate(contactId, req.body, {

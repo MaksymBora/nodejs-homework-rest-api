@@ -24,28 +24,34 @@ connectDB().catch(console.error);
 
 // Get full list of contacts
 export async function listContacts(_, res) {
-  // try {
   const data = await Contact.find();
-
   res.json(data);
-  // } catch (error) {
-  //   console.error('Error in listContacts:', error);
-  //   throw error;
-  // }
 }
 
 export const getAll = ctrlWrapper(listContacts);
 
 // Get contact by ID
-export async function getContactById(contactId) {
-  try {
-    const data = await listContacts();
+// export async function getContactById(contactId) {
+//   try {
+//     const data = await listContacts();
 
-    return data.find(contact => contact.id === contactId) || null;
-  } catch (error) {
-    console.log(error.red);
-  }
+//     return data.find(contact => contact.id === contactId) || null;
+//   } catch (error) {
+//     console.log(error.red);
+//   }
+// }
+
+export async function getContactById(req, res, next) {
+  const { contactId } = req.params;
+
+  const contact = await Contact.findById(contactId);
+
+  if (!contact) throw HttpError(404, 'Contact not found');
+
+  res.json(contact);
 }
+
+export const getById = ctrlWrapper(getContactById);
 
 // Add new contact
 // export async function addContact(contactData) {

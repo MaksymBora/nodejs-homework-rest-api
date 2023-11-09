@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
   getAll,
+  getById,
   getContactById,
   removeContact,
   updateContact,
@@ -25,15 +26,7 @@ const router = Router();
 router.get('/', getAll);
 
 // Get contact by ID
-router.get('/:contactId', async (req, res, next) => {
-  const { contactId } = req.params;
-
-  const contact = await getContactById(contactId);
-
-  if (!contact) return next();
-
-  res.status(200).json(contact);
-});
+router.get('/:contactId', getById);
 
 // Add new Contact
 router.post('/', async (req, res, next) => {

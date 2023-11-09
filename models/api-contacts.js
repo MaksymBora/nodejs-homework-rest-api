@@ -1,9 +1,10 @@
 /* eslint-disable no-undef */
-import { promises as fs } from 'fs';
+import mongoose from 'mongoose';
+import { Contact } from './contact.js';
+// import { promises as fs } from 'fs';
 import { nanoid } from 'nanoid';
 import path from 'path';
 import 'colors';
-import mongoose from 'mongoose';
 
 const contactsPath = path.resolve('./models/contacts.json');
 
@@ -17,8 +18,6 @@ async function connectDB() {
     console.log('Database connection successful');
   } catch (error) {
     console.error(error);
-  } finally {
-    await mongoose.disconnect();
   }
 }
 
@@ -27,11 +26,9 @@ connectDB().catch(console.error);
 // Get full list of contacts
 export async function listContacts() {
   try {
-    const data = await fs.readFile(contactsPath, 'utf-8');
+    const data = await Contact.find();
 
-    const contacts = JSON.parse(data);
-
-    return contacts;
+    return data;
   } catch (error) {
     console.error('Error in listContacts:', error);
     throw error;
@@ -44,6 +41,21 @@ export async function getContactById(contactId) {
     const data = await listContacts();
 
     return data.find(contact => contact.id === contactId) || null;
+  } catch (error) {
+    console.log(error.red);
+  }
+}
+
+// Add new contact
+export async function addContact(contactData) {
+  try {
+    const newContact = {
+      ...contactData,
+    };
+
+    const result = await Contact.create(newContact);
+
+    return result;
   } catch (error) {
     console.log(error.red);
   }
@@ -66,27 +78,6 @@ export async function removeContact(contactId) {
       data.find(contact => contactId === contact.id) || null;
 
     return deletedContact;
-  } catch (error) {
-    console.log(error.red);
-  }
-}
-
-// Add new contact
-export async function addContact(contactData) {
-  try {
-    const contacts = await listContacts();
-
-    const newContact = {
-      id: nanoid(),
-      ...contactData,
-    };
-
-    const updatedContacts = [newContact, ...contacts];
-    await fs.writeFile(contactsPath, JSON.stringify(updatedContacts, null, 2), {
-      encoding: 'utf-8',
-    });
-
-    return newContact;
   } catch (error) {
     console.log(error.red);
   }

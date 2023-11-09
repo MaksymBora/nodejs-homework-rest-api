@@ -4,6 +4,7 @@ export const contactSchema = joi.object({
   name: joi.string().min(2).required(),
   email: joi.string().required(),
   phone: joi.string().required(),
+  favorite: joi.boolean().default(false),
 });
 
 const contactValidator = schema => data => {

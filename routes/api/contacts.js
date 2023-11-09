@@ -7,7 +7,6 @@ import {
   updateById,
   updateFavorite,
 } from '../../models/api-contacts.js';
-import { contactValidate } from '../../models/contact.js';
 import { isValidId } from '../../helpers/isValidId.js';
 
 const router = Router();

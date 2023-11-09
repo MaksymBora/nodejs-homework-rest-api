@@ -1,15 +1,11 @@
 /* eslint-disable no-undef */
 import mongoose from 'mongoose';
 import { Contact, contactValidate, favoriteValidate } from './contact.js';
-import path from 'path';
 import 'colors';
 import { ctrlWrapper } from '../helpers/ctrlWrapper.js';
 import { contactValidator } from '../helpers/contactValidatorWrapper.js';
 
-const contactsPath = path.resolve('./models/contacts.json');
-
 // Connect to MongoDB
-
 const DB_URI = process.env['DB_URI'];
 
 async function connectDB() {
@@ -110,28 +106,7 @@ async function updateStatusContact(req, res, next) {
 
 export const updateFavorite = ctrlWrapper(updateStatusContact);
 
-// Delete existed contact
-// export async function removeContact(contactId) {
-//   try {
-//     const data = await listContacts();
-
-//     const UpdatedContacts = data.filter(({ id }) => id !== contactId);
-
-//     await fs.writeFile(
-//       contactsPath,
-//       JSON.stringify(UpdatedContacts, null, 2),
-//       'utf-8',
-//     );
-
-//     const deletedContact =
-//       data.find(contact => contactId === contact.id) || null;
-
-//     return deletedContact;
-//   } catch (error) {
-//     console.log(error.red);
-//   }
-// }
-
+// Delete contact by ID
 async function removeContact(req, res) {
   const { contactId } = req.params;
 

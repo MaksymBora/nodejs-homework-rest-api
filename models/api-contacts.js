@@ -1,8 +1,8 @@
-/* eslint-disable no-undef */
 import { Contact, contactValidate, favoriteValidate } from './contact.js';
 import 'colors';
 import { ctrlWrapper } from '../helpers/ctrlWrapper.js';
 import { contactValidator } from '../helpers/contactValidatorWrapper.js';
+import { HttpError } from '../helpers/HttpError.js';
 
 // Get full list of contacts
 async function listContacts(_, res) {
@@ -30,9 +30,8 @@ async function addContact(req, res) {
   const { error } = contactValidate(req.body);
 
   if (typeof error !== 'undefined') {
-    return res
-      .status(400)
-      .send(error.details.map(err => err.message).join(', '));
+    const errorMessages = error.details.map(err => `${err.message}`).join(', ');
+    return res.status(400).json({ message: errorMessages });
   }
 
   const contact = await Contact.create(req.body);

@@ -1,8 +1,8 @@
-/* eslint-disable no-undef */
 import { Contact, contactValidate, favoriteValidate } from './contact.js';
 import 'colors';
 import { ctrlWrapper } from '../helpers/ctrlWrapper.js';
 import { contactValidator } from '../helpers/contactValidatorWrapper.js';
+import { HttpError } from '../helpers/HttpError.js';
 
 // Get full list of contacts
 async function listContacts(_, res) {

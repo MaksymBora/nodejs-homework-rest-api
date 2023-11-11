@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import mongoose from 'mongoose';
 import app from './app.js';
 

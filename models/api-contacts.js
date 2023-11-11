@@ -1,5 +1,4 @@
 /* eslint-disable no-undef */
-import mongoose from 'mongoose';
 import { Contact, contactValidate, favoriteValidate } from './contact.js';
 import 'colors';
 import { ctrlWrapper } from '../helpers/ctrlWrapper.js';
@@ -31,9 +30,8 @@ async function addContact(req, res) {
   const { error } = contactValidate(req.body);
 
   if (typeof error !== 'undefined') {
-    return res
-      .status(400)
-      .send(error.details.map(err => err.message).join(', '));
+    const errorMessages = error.details.map(err => `${err.message}`).join(', ');
+    return res.status(400).json({ message: errorMessages });
   }
 
   const contact = await Contact.create(req.body);

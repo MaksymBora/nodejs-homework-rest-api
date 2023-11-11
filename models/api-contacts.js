@@ -1,5 +1,4 @@
 /* eslint-disable no-undef */
-import mongoose from 'mongoose';
 import { Contact, contactValidate, favoriteValidate } from './contact.js';
 import 'colors';
 import { ctrlWrapper } from '../helpers/ctrlWrapper.js';

@@ -1,4 +1,9 @@
+import * as bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import 'dotenv/config';
 import { User } from '../models/user.js';
+
+const { SECRET_KEY } = process.env;
 
 export const register = async (req, res, next) => {
   const { password, email, subscription } = req.body;
@@ -6,12 +11,45 @@ export const register = async (req, res, next) => {
   try {
     const user = await User.findOne({ email }).exec();
 
-    if (user !== null) res.status(409).send({ message: 'User already exists' });
+    if (user !== null) res.status(409).send({ message: 'Email in use' });
 
-    await User.create({ password, email, subscription });
+    const passwordHash = bcrypt.hashSync(password, 10);
 
-    res.status(201).send({ message: 'User created' });
+    await User.create({ password: passwordHash, email, subscription });
+
+    res.status(201).send({
+      user: {
+        email,
+        subscription,
+      },
+    });
   } catch (error) {
-    console.log(error);
+    next(error);
+  }
+};
+
+export const login = async (req, res, next) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.findOne({ email }).exec();
+
+    if (user === null)
+      res.status(401).send({ message: 'Email or password is incorrect' });
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch)
+      res.status(401).send({ message: 'Email or password is incorrect' });
+
+    const payload = {
+      id: user._id,
+    };
+
+    const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '23h' });
+
+    res.json({ token });
+  } catch (error) {
+    next(error);
   }
 };

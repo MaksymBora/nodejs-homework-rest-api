@@ -1,5 +1,10 @@
 import { Schema, model } from 'mongoose';
 import { handleMongooseError } from '../helpers/handleMongooseError.js';
+import Joi from 'joi';
+
+// eslint-disable-next-line no-useless-escape
+const emailRegexp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; // example@example.com
+const subscriptionList = ['starter', 'pro', 'business'];
 
 const userSchema = new Schema(
   {
@@ -9,13 +14,14 @@ const userSchema = new Schema(
     },
     email: {
       type: String,
+      match: [emailRegexp, 'Invalid email format provided'],
       required: [true, 'Email is required'],
       index: true,
       unique: true,
     },
     subscription: {
       type: String,
-      enum: ['starter', 'pro', 'business'],
+      enum: subscriptionList,
       default: 'starter',
     },
     token: String,
@@ -24,5 +30,18 @@ const userSchema = new Schema(
 );
 
 userSchema.post('save', handleMongooseError);
+
+export const registerSchema = Joi.object({
+  email: Joi.string().pattern(emailRegexp).required().messages({
+    'string.pattern.base': 'Email format must be - example@example.com',
+  }),
+  password: Joi.string().min(6).required(),
+  subscription: Joi.string().valid(...subscriptionList),
+});
+
+export const loginSchema = Joi.object({
+  email: Joi.string().pattern(emailRegexp).required(),
+  password: Joi.string().min(6).required(),
+});
 
 export const User = model('user', userSchema);

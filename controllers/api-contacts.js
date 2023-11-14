@@ -5,7 +5,6 @@ import {
 } from '../models/contact.js';
 import 'colors';
 import { ctrlWrapper } from '../helpers/ctrlWrapper.js';
-import { contactValidator } from '../helpers/contactValidatorWrapper.js';
 import { HttpError } from '../helpers/HttpError.js';
 
 // Get full list of contacts
@@ -50,7 +49,7 @@ export const add = ctrlWrapper(addContact);
 async function updateContact(req, res, next) {
   const { contactId } = req.params;
 
-  const { error } = contactValidator(req.body);
+  const { error } = contactValidate(req.body);
 
   if (typeof error !== 'undefined') {
     const errorMessages = error.details.map(

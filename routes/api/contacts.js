@@ -6,7 +6,7 @@ import {
   removeContactById,
   updateById,
   updateFavorite,
-} from '../../models/api-contacts.js';
+} from '../../controllers/api-contacts.js';
 import { isValidId } from '../../helpers/isValidId.js';
 
 const router = Router();

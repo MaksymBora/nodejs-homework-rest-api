@@ -1,4 +1,8 @@
-import { Contact, contactValidate, favoriteValidate } from './contact.js';
+import {
+  Contact,
+  contactValidate,
+  favoriteValidate,
+} from '../models/contact.js';
 import 'colors';
 import { ctrlWrapper } from '../helpers/ctrlWrapper.js';
 import { contactValidator } from '../helpers/contactValidatorWrapper.js';

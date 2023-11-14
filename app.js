@@ -2,6 +2,7 @@ import express, { json } from 'express';
 import logger from 'morgan';
 import cors from 'cors';
 import contactsRouter from './routes/api/contacts.js';
+import userRouter from './routes/api/auth.js';
 import 'colors';
 
 const app = express();
@@ -14,6 +15,7 @@ app.use(cors());
 app.use(json());
 
 app.use('/api/contacts', contactsRouter);
+app.use('/users', userRouter);
 
 app.use((_, res) => {
   res.status(404).json({ message: 'Not found!' });

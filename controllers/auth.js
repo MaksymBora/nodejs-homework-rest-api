@@ -2,6 +2,7 @@ import * as bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import 'dotenv/config';
 import { User } from '../models/user.js';
+import { HttpError } from '../helpers/HttpError.js';
 
 const { SECRET_KEY } = process.env;
 
@@ -11,16 +12,19 @@ export const register = async (req, res, next) => {
   try {
     const user = await User.findOne({ email }).exec();
 
-    if (user !== null) res.status(409).send({ message: 'Email in use' });
+    if (user) throw HttpError(409, 'Email in use');
 
-    const passwordHash = bcrypt.hashSync(password, 10);
+    const passwordHash = await bcrypt.hashSync(password, 10);
 
-    await User.create({ password: passwordHash, email, subscription });
+    const newUser = await User.create({
+      password: passwordHash,
+      ...req.body,
+    });
 
     res.status(201).send({
       user: {
-        email,
-        subscription,
+        email: newUser.email,
+        subscription: newUser.subscription,
       },
     });
   } catch (error) {
@@ -34,13 +38,11 @@ export const login = async (req, res, next) => {
   try {
     const user = await User.findOne({ email }).exec();
 
-    if (user === null)
-      res.status(401).send({ message: 'Email or password is incorrect' });
+    if (!user) throw HttpError(401, 'Email or password is incorrect');
 
     const isMatch = await bcrypt.compare(password, user.password);
 
-    if (!isMatch)
-      res.status(401).send({ message: 'Email or password is incorrect' });
+    if (!isMatch) throw HttpError(401, 'Email or password is incorrect');
 
     const payload = {
       id: user._id,

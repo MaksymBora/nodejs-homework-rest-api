@@ -10,10 +10,14 @@ import { HttpError } from '../helpers/HttpError.js';
 // Get full list of contacts
 async function listContacts(req, res) {
   const { _id: owner } = req.user;
-  const data = await Contact.find({ owner }, '-createdAt -updatedAt').populate(
-    'owner',
-    'email',
-  );
+
+  const { page = 1, limit = 10 } = req.query;
+  const skip = (page - 1) * limit;
+
+  const data = await Contact.find({ owner }, '-createdAt -updatedAt', {
+    skip,
+    limit,
+  }).populate('owner', 'email');
 
   res.json(data);
 }

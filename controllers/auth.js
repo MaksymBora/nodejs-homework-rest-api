@@ -50,6 +50,9 @@ export const login = async (req, res, next) => {
 
     const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '23h' });
 
+    // add token to the user
+    await User.findByIdAndUpdate(user._id, { token });
+
     res.status(200).json({
       token,
       user: { email: user.email, subscription: user.subscription },
@@ -63,4 +66,11 @@ export const getCurrent = async (req, res) => {
   const { email } = req.user;
 
   res.json({ email });
+};
+
+export const logout = async (req, res) => {
+  const { _id } = req.user;
+  await User.findByIdAndUpdate(_id, { token: '' });
+
+  res.status(200).json({ message: 'Logged out successfully' });
 };

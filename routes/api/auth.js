@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getCurrent, login, register } from '../../controllers/auth.js';
+import { getCurrent, login, logout, register } from '../../controllers/auth.js';
 import { authValidator } from '../../middlewares/bodyValidatorWrapper.js';
 import { loginSchema, registerSchema } from '../../models/user.js';
 import { authenticate } from '../../middlewares/authenticate.js';
@@ -12,5 +12,7 @@ router.post('/register', authValidator(registerSchema), register);
 router.post('/login', authValidator(loginSchema), login);
 
 router.get('/current', authenticate, ctrlWrapper(getCurrent));
+
+router.post('/logout', authenticate, logout);
 
 export default router;

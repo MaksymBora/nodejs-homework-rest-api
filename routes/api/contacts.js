@@ -7,25 +7,26 @@ import {
   updateById,
   updateFavorite,
 } from '../../controllers/api-contacts.js';
-import { isValidId } from '../../helpers/isValidId.js';
+import { isValidId } from '../../middlewares/isValidId.js';
+import { authenticate } from '../../middlewares/authenticate.js';
 
 const router = Router();
 
-router.get('/', getAll);
+router.get('/', authenticate, getAll);
 
 // Get contact by ID
-router.get('/:contactId', isValidId, getById);
+router.get('/:contactId', authenticate, isValidId, getById);
 
 // Add new Contact
-router.post('/', add);
+router.post('/', authenticate, add);
 
 // Update contact's information
-router.put('/:contactId', isValidId, updateById);
+router.put('/:contactId', authenticate, isValidId, updateById);
 
 // Update contact Status by ID
-router.patch('/:contactId/favorite', isValidId, updateFavorite);
+router.patch('/:contactId/favorite', authenticate, isValidId, updateFavorite);
 
 // Delete Contact
-router.delete('/:contactId', isValidId, removeContactById);
+router.delete('/:contactId', authenticate, removeContactById);
 
 export default router;

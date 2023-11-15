@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose';
 import { handleMongooseError } from '../helpers/handleMongooseError.js';
 import joi from 'joi';
-import { contactValidator } from '../helpers/bodyValidatorWrapper.js';
+import { contactValidator } from '../middlewares/bodyValidatorWrapper.js';
 
 const phoneRegex = /^[0-9]{10}$/;
 

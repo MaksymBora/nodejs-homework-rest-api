@@ -7,18 +7,18 @@ import { HttpError } from '../helpers/HttpError.js';
 const { SECRET_KEY } = process.env;
 
 export const register = async (req, res, next) => {
-  const { password, email, subscription } = req.body;
+  const { password, email } = req.body;
 
   try {
     const user = await User.findOne({ email }).exec();
 
     if (user) throw HttpError(409, 'Email in use');
 
-    const passwordHash = await bcrypt.hashSync(password, 10);
+    const passwordHash = await bcrypt.hash(password, 10);
 
     const newUser = await User.create({
-      password: passwordHash,
       ...req.body,
+      password: passwordHash,
     });
 
     res.status(201).send({

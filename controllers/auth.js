@@ -58,3 +58,9 @@ export const login = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getCurrent = async (req, res) => {
+  const { email } = req.user;
+
+  res.json({ email });
+};

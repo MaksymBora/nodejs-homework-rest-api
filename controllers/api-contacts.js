@@ -8,8 +8,9 @@ import { ctrlWrapper } from '../helpers/ctrlWrapper.js';
 import { HttpError } from '../helpers/HttpError.js';
 
 // Get full list of contacts
-async function listContacts(_, res) {
-  const data = await Contact.find({}, '-createdAt -updatedAt');
+async function listContacts(req, res) {
+  const { _id: owner } = req.user;
+  const data = await Contact.find({ owner }, '-createdAt -updatedAt');
   res.json(data);
 }
 
@@ -30,6 +31,7 @@ export const getById = ctrlWrapper(getContactById);
 
 // Add new contact
 async function addContact(req, res) {
+  const { _id: owner } = req.user;
   const { error } = contactValidate(req.body);
 
   if (typeof error !== 'undefined') {
@@ -37,10 +39,11 @@ async function addContact(req, res) {
     return res.status(400).json({ message: errorMessages });
   }
 
-  const contact = await Contact.create(req.body);
+  const contact = await Contact.create({ ...req.body, owner });
+  const { name, email, phone, favorite } = contact;
 
   if (!contact) res.status(400).json({ message: 'missing required fields' });
-  res.status(201).json(contact);
+  res.status(201).json({ name, email, phone, favorite });
 }
 
 export const add = ctrlWrapper(addContact);

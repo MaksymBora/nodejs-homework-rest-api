@@ -10,7 +10,11 @@ import { HttpError } from '../helpers/HttpError.js';
 // Get full list of contacts
 async function listContacts(req, res) {
   const { _id: owner } = req.user;
-  const data = await Contact.find({ owner }, '-createdAt -updatedAt');
+  const data = await Contact.find({ owner }, '-createdAt -updatedAt').populate(
+    'owner',
+    'email',
+  );
+
   res.json(data);
 }
 

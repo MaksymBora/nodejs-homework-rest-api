@@ -63,14 +63,14 @@ export const login = async (req, res, next) => {
 };
 
 export const getCurrent = async (req, res) => {
-  const { email } = req.user;
+  const { email, subscription } = req.user;
 
-  res.json({ email });
+  res.json({ email, subscription });
 };
 
 export const logout = async (req, res) => {
   const { _id } = req.user;
   await User.findByIdAndUpdate(_id, { token: '' });
 
-  res.status(200).json({ message: 'Logged out successfully' });
+  res.status(204).send();
 };

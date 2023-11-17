@@ -1,12 +1,30 @@
-import { Contact, contactValidate, favoriteValidate } from './contact.js';
+import {
+  Contact,
+  contactValidate,
+  favoriteValidate,
+} from '../models/contact.js';
 import 'colors';
 import { ctrlWrapper } from '../helpers/ctrlWrapper.js';
-import { contactValidator } from '../helpers/contactValidatorWrapper.js';
 import { HttpError } from '../helpers/HttpError.js';
 
 // Get full list of contacts
-async function listContacts(_, res) {
-  const data = await Contact.find({}, '-createdAt -updatedAt');
+async function listContacts(req, res) {
+  const { _id: owner } = req.user;
+
+  const { page = 1, limit = 10, favorite } = req.query;
+  const skip = (page - 1) * limit;
+
+  let query = { owner };
+
+  if (favorite === 'true') {
+    query.favorite = true;
+  }
+
+  const data = await Contact.find(query, '-createdAt -updatedAt', {
+    skip,
+    limit,
+  }).populate('owner', 'email');
+
   res.json(data);
 }
 
@@ -27,6 +45,7 @@ export const getById = ctrlWrapper(getContactById);
 
 // Add new contact
 async function addContact(req, res) {
+  const { _id: owner } = req.user;
   const { error } = contactValidate(req.body);
 
   if (typeof error !== 'undefined') {
@@ -34,10 +53,11 @@ async function addContact(req, res) {
     return res.status(400).json({ message: errorMessages });
   }
 
-  const contact = await Contact.create(req.body);
+  const contact = await Contact.create({ ...req.body, owner });
+  const { name, email, phone, favorite } = contact;
 
   if (!contact) res.status(400).json({ message: 'missing required fields' });
-  res.status(201).json(contact);
+  res.status(201).json({ name, email, phone, favorite });
 }
 
 export const add = ctrlWrapper(addContact);
@@ -46,7 +66,7 @@ export const add = ctrlWrapper(addContact);
 async function updateContact(req, res, next) {
   const { contactId } = req.params;
 
-  const { error } = contactValidator(req.body);
+  const { error } = contactValidate(req.body);
 
   if (typeof error !== 'undefined') {
     const errorMessages = error.details.map(

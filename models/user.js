@@ -26,7 +26,7 @@ const userSchema = new Schema(
     },
     token: {
       type: String,
-      default: '',
+      default: null,
     },
   },
   { timeseries: true, versionKey: false },

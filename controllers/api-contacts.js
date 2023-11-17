@@ -11,10 +11,16 @@ import { HttpError } from '../helpers/HttpError.js';
 async function listContacts(req, res) {
   const { _id: owner } = req.user;
 
-  const { page = 1, limit = 10 } = req.query;
+  const { page = 1, limit = 10, favorite } = req.query;
   const skip = (page - 1) * limit;
 
-  const data = await Contact.find({ owner }, '-createdAt -updatedAt', {
+  let query = { owner };
+
+  if (favorite === 'true') {
+    query.favorite = true;
+  }
+
+  const data = await Contact.find(query, '-createdAt -updatedAt', {
     skip,
     limit,
   }).populate('owner', 'email');

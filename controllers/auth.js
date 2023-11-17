@@ -21,10 +21,14 @@ export const register = async (req, res, next) => {
       password: passwordHash,
     });
 
-    res.status(201).send({
-      user: {
-        email: newUser.email,
-        subscription: newUser.subscription,
+    res.status(201).json({
+      status: 'success',
+      code: 201,
+      data: {
+        user: {
+          email: newUser.email,
+          subscription: newUser.subscription,
+        },
       },
     });
   } catch (error) {
@@ -70,7 +74,7 @@ export const getCurrent = async (req, res) => {
 
 export const logout = async (req, res) => {
   const { _id } = req.user;
-  await User.findByIdAndUpdate(_id, { token: '' });
+  await User.findByIdAndUpdate(_id, { token: null });
 
   res.status(204).send();
 };

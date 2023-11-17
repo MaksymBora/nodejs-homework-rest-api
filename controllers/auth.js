@@ -79,7 +79,6 @@ export const logout = async (req, res) => {
   res.status(204).send();
 };
 
-// Update subscription
 export async function updateSubscription(req, res, next) {
   const { _id: user } = req.user;
 

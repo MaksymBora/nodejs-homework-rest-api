@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 import { Schema, model } from 'mongoose';
 import { handleMongooseError } from '../helpers/handleMongooseError.js';
 import joi from 'joi';

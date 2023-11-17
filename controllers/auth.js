@@ -23,7 +23,7 @@ export const register = async (req, res, next) => {
 
     res.status(statusCode).json({
       status: 'success',
-      code: 201,
+      code: statusCode,
       data: {
         user: {
           email: newUser.email,

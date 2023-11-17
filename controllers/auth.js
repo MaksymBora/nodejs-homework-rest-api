@@ -78,3 +78,28 @@ export const logout = async (req, res) => {
 
   res.status(204).send();
 };
+
+// Update subscription
+export async function updateSubscription(req, res, next) {
+  const { _id: user } = req.user;
+
+  const userSubscription = await User.findByIdAndUpdate(user, req.body, {
+    new: true,
+  });
+
+  if (!userSubscription) return next();
+
+  const { email, subscription } = userSubscription;
+
+  res.status(200).json({
+    status: 'success',
+    code: 201,
+    data: {
+      user: {
+        id: user,
+        email,
+        subscription,
+      },
+    },
+  });
+}

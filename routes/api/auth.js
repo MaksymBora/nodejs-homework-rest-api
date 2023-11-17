@@ -1,7 +1,17 @@
 import { Router } from 'express';
-import { getCurrent, login, logout, register } from '../../controllers/auth.js';
+import {
+  getCurrent,
+  login,
+  logout,
+  register,
+  updateSubscription,
+} from '../../controllers/auth.js';
 import { authValidator } from '../../middlewares/bodyValidatorWrapper.js';
-import { loginSchema, registerSchema } from '../../models/user.js';
+import {
+  loginSchema,
+  registerSchema,
+  subscriprionSchema,
+} from '../../models/user.js';
 import { authenticate } from '../../middlewares/authenticate.js';
 import { ctrlWrapper } from '../../helpers/ctrlWrapper.js';
 
@@ -14,5 +24,12 @@ router.post('/login', authValidator(loginSchema), login);
 router.get('/current', authenticate, ctrlWrapper(getCurrent));
 
 router.post('/logout', authenticate, logout);
+
+router.patch(
+  '/',
+  authenticate,
+  authValidator(subscriprionSchema),
+  ctrlWrapper(updateSubscription),
+);
 
 export default router;

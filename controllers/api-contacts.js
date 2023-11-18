@@ -7,7 +7,7 @@ import 'colors';
 import { ctrlWrapper } from '../helpers/ctrlWrapper.js';
 import { HttpError } from '../helpers/HttpError.js';
 
-// Get full list of contacts
+// ============= Get full list of contacts ================ //
 async function listContacts(req, res) {
   const { _id: owner } = req.user;
 
@@ -30,20 +30,24 @@ async function listContacts(req, res) {
 
 export const getAll = ctrlWrapper(listContacts);
 
-//Get contact by ID
-async function getContactById(req, res) {
+// ================ Get contact by ID ================ //
+async function getContactById(req, res, next) {
   const { contactId } = req.params;
+  const { _id } = req.user;
 
   const contact = await Contact.findById(contactId);
 
-  if (!contact) throw HttpError(404, 'Contact not found');
+  const verifiedContact =
+    contact.owner.toString() === _id.toString()
+      ? contact
+      : next(HttpError(404, 'Contact not found'));
 
-  res.json(contact);
+  res.json(verifiedContact);
 }
 
 export const getById = ctrlWrapper(getContactById);
 
-// Add new contact
+// ============= Add new contact ================== //
 async function addContact(req, res) {
   const { _id: owner } = req.user;
   const { error } = contactValidate(req.body);
@@ -54,15 +58,15 @@ async function addContact(req, res) {
   }
 
   const contact = await Contact.create({ ...req.body, owner });
-  const { name, email, phone, favorite } = contact;
+  const { _id, name, email, phone, favorite } = contact;
 
   if (!contact) res.status(400).json({ message: 'missing required fields' });
-  res.status(201).json({ name, email, phone, favorite });
+  res.status(201).json({ _id, name, email, phone, favorite });
 }
 
 export const add = ctrlWrapper(addContact);
 
-// Update existed contact
+// =============== Update existed contact ====================== //
 async function updateContact(req, res, next) {
   const { contactId } = req.params;
 
@@ -86,7 +90,7 @@ async function updateContact(req, res, next) {
 
 export const updateById = ctrlWrapper(updateContact);
 
-// Update contact Status by ID
+// ============== Update contact Status by ID ============== //
 async function updateStatusContact(req, res, next) {
   const { contactId } = req.params;
 
@@ -107,15 +111,13 @@ async function updateStatusContact(req, res, next) {
 
 export const updateFavorite = ctrlWrapper(updateStatusContact);
 
-// Delete contact by ID
-async function removeContact(req, res) {
+// ============== Delete contact by ID ==================== //
+async function removeContact(req, res, next) {
   const { contactId } = req.params;
 
-  const contact = await Contact.findByIdAndDelete(contactId);
+  await Contact.findByIdAndDelete(contactId);
 
-  if (!contact) res.status(400).json({ message: 'missing required fields' });
-
-  res.status(200).json(contact);
+  res.status(200).json({ message: 'contact deleted' });
 }
 
 export const removeContactById = ctrlWrapper(removeContact);

@@ -114,15 +114,6 @@ export const updateFavorite = ctrlWrapper(updateStatusContact);
 // ============== Delete contact by ID ==================== //
 async function removeContact(req, res, next) {
   const { contactId } = req.params;
-  const { _id } = req.user;
-
-  const contact = await Contact.findById(contactId);
-
-  if (!contact) throw new HttpError(404, 'Contact not found');
-
-  const verifyUser = contact.owner.toString() === _id.toString();
-
-  if (!verifyUser) throw HttpError(404, 'Contact not found');
 
   await Contact.findByIdAndDelete(contactId);
 

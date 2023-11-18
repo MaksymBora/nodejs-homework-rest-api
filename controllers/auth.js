@@ -118,14 +118,7 @@ export async function updateSubscription(req, res, next) {
   const { email, subscription } = userSubscription;
 
   res.status(200).json({
-    status: 'success',
-    code: 201,
-    data: {
-      user: {
-        id: user,
-        email,
-        subscription,
-      },
-    },
+    email,
+    subscription,
   });
 }

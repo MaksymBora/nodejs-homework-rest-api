@@ -54,10 +54,10 @@ async function addContact(req, res) {
   }
 
   const contact = await Contact.create({ ...req.body, owner });
-  const { name, email, phone, favorite } = contact;
+  const { _id, name, email, phone, favorite } = contact;
 
   if (!contact) res.status(400).json({ message: 'missing required fields' });
-  res.status(201).json({ name, email, phone, favorite });
+  res.status(201).json({ _id, name, email, phone, favorite });
 }
 
 export const add = ctrlWrapper(addContact);

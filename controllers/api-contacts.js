@@ -31,14 +31,18 @@ async function listContacts(req, res) {
 export const getAll = ctrlWrapper(listContacts);
 
 // ================ Get contact by ID ================ //
-async function getContactById(req, res) {
+async function getContactById(req, res, next) {
   const { contactId } = req.params;
+  const { _id } = req.user;
 
   const contact = await Contact.findById(contactId);
 
-  if (!contact) throw HttpError(404, 'Contact not found');
+  const verifiedContact =
+    contact.owner.toString() === _id.toString()
+      ? contact
+      : next(HttpError(404, 'Contact not found'));
 
-  res.json(contact);
+  res.json(verifiedContact);
 }
 
 export const getById = ctrlWrapper(getContactById);

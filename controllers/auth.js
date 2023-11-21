@@ -5,11 +5,12 @@ import { User } from '../models/user.js';
 import { HttpError } from '../helpers/HttpError.js';
 import gravatar from 'gravatar';
 import path from 'path';
-import { promises as fs } from 'fs';
+// import { promises as fs } from 'fs';
+import { rename } from 'node:fs/promises';
 
 const { SECRET_KEY } = process.env;
 
-const avatarsDir = path.resolve('../public/avatars');
+const avatarsDir = path.resolve('public/avatars');
 
 export const register = async (req, res, next) => {
   const { password, email } = req.body;
@@ -123,13 +124,17 @@ export async function updateSubscription(req, res, next) {
 // Update User's Avatar
 
 export const updateAvatar = async (req, res) => {
-  const { _id } = req.user;
+  const { _id: user } = req.user;
+
   const { path: tempUpload, originalname } = req.file;
 
   const resultUpload = path.join(avatarsDir, originalname);
-  await fs.rename(tempUpload, resultUpload);
+
+  await rename(tempUpload, resultUpload);
+
   const avatarURL = path.join('avatars', originalname);
-  await User.findByIdAndUpdate(_id, { avatarURL });
+
+  await User.findByIdAndUpdate(user, { avatarURL });
 
   res.json({ avatarURL });
 };

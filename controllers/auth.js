@@ -3,8 +3,13 @@ import jwt from 'jsonwebtoken';
 import 'dotenv/config';
 import { User } from '../models/user.js';
 import { HttpError } from '../helpers/HttpError.js';
+import gravatar from 'gravatar';
+import path from 'path';
+import { promises as fs } from 'fs';
 
 const { SECRET_KEY } = process.env;
+
+const avatarsDir = path.resolve('../public/avatars');
 
 export const register = async (req, res, next) => {
   const { password, email } = req.body;
@@ -30,6 +35,7 @@ export const register = async (req, res, next) => {
           subscription: newUser.subscription,
         },
         token,
+        avatarURL: newUser.avatarURL,
       },
     });
   };
@@ -40,24 +46,15 @@ export const register = async (req, res, next) => {
     if (user) throw HttpError(409, 'Email in use');
 
     const passwordHash = await bcrypt.hash(password, 10);
+    const avatarURL = gravatar.url(email, { s: '250', r: 'x', d: 'retro' });
 
     const newUser = await User.create({
       ...req.body,
       password: passwordHash,
+      avatarURL,
     });
 
     generateToken(newUser, 201, res);
-
-    // res.status(201).json({
-    //   status: 'success',
-    //   code: 201,
-    //   data: {
-    //     user: {
-    //       email: newUser.email,
-    //       subscription: newUser.subscription,
-    //     },
-    //   },
-    // });
   } catch (error) {
     next(error);
   }
@@ -122,3 +119,17 @@ export async function updateSubscription(req, res, next) {
     subscription,
   });
 }
+
+// Update User's Avatar
+
+export const updateAvatar = async (req, res) => {
+  const { _id } = req.user;
+  const { path: tempUpload, originalname } = req.file;
+
+  const resultUpload = path.join(avatarsDir, originalname);
+  await fs.rename(tempUpload, resultUpload);
+  const avatarURL = path.join('avatars', originalname);
+  await User.findByIdAndUpdate(_id, { avatarURL });
+
+  res.json({ avatarURL });
+};

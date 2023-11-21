@@ -37,6 +37,10 @@ async function getContactById(req, res, next) {
 
   const contact = await Contact.findById(contactId);
 
+  if (!contact) {
+    return next(HttpError(404, 'Contact not found'));
+  }
+
   const verifiedContact =
     contact.owner.toString() === _id.toString()
       ? contact

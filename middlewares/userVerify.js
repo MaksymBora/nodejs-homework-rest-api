@@ -7,6 +7,10 @@ export const userVerify = async (req, res, next) => {
 
   const contact = await Contact.findById(contactId);
 
+  if (!contact) {
+    return next(HttpError(404, 'Contact not found'));
+  }
+
   const verifyUser = contact.owner.toString() === _id.toString();
 
   if (!contact || !verifyUser) return next(HttpError(404, 'Contact not found'));

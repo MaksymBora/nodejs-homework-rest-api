@@ -148,3 +148,5 @@ export const updateAvatar = async (req, res) => {
 
   res.json({ avatarURL });
 };
+
+// export default login;

@@ -2,7 +2,6 @@ import multer from 'multer';
 import path from 'path';
 
 const tempDir = path.resolve('temp');
-console.log(tempDir, 'tempDir');
 
 const multerConfig = multer.diskStorage({
   destination: tempDir,
@@ -11,7 +10,7 @@ const multerConfig = multer.diskStorage({
   },
 });
 
-const maxSize = 1 * 1024 * 1024; // 1mb
+const maxSize = 1.5 * 1024 * 1024; // 1mb
 
 export const upload = multer({
   storage: multerConfig,

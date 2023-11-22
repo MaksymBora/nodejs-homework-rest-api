@@ -3,8 +3,15 @@ import jwt from 'jsonwebtoken';
 import 'dotenv/config';
 import { User } from '../models/user.js';
 import { HttpError } from '../helpers/HttpError.js';
+import gravatar from 'gravatar';
+import path from 'path';
+// import { promises as fs } from 'fs';
+import { rename } from 'node:fs/promises';
+import Jimp from 'jimp';
 
 const { SECRET_KEY } = process.env;
+
+const avatarsDir = path.resolve('public/avatars');
 
 export const register = async (req, res, next) => {
   const { password, email } = req.body;
@@ -30,6 +37,7 @@ export const register = async (req, res, next) => {
           subscription: newUser.subscription,
         },
         token,
+        avatarURL: newUser.avatarURL,
       },
     });
   };
@@ -40,24 +48,15 @@ export const register = async (req, res, next) => {
     if (user) throw HttpError(409, 'Email in use');
 
     const passwordHash = await bcrypt.hash(password, 10);
+    const avatarURL = gravatar.url(email);
 
     const newUser = await User.create({
       ...req.body,
       password: passwordHash,
+      avatarURL,
     });
 
     generateToken(newUser, 201, res);
-
-    // res.status(201).json({
-    //   status: 'success',
-    //   code: 201,
-    //   data: {
-    //     user: {
-    //       email: newUser.email,
-    //       subscription: newUser.subscription,
-    //     },
-    //   },
-    // });
   } catch (error) {
     next(error);
   }
@@ -122,3 +121,32 @@ export async function updateSubscription(req, res, next) {
     subscription,
   });
 }
+
+// Update User's Avatar
+export const updateAvatar = async (req, res) => {
+  const { _id: user } = req.user;
+
+  const { path: tempUpload, originalname } = req.file;
+
+  const filename = `${user}_${originalname}`;
+
+  const resultUpload = path.join(avatarsDir, filename);
+
+  await rename(tempUpload, resultUpload);
+
+  Jimp.read(resultUpload)
+    .then(image => {
+      return image.resize(250, 250).write(`${avatarsDir}/250x250x${filename}`);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+
+  const avatarURL = path.join('avatars', filename);
+
+  await User.findByIdAndUpdate(user, { avatarURL });
+
+  res.json({ avatarURL });
+};
+
+// export default login;

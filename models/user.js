@@ -55,4 +55,8 @@ export const subscriprionSchema = Joi.object({
   subscription: Joi.string().valid(...subscriptionList),
 });
 
+export const updateAvatarSchema = Joi.object({
+  payload: { files: Joi.array().items(Joi.any()) },
+});
+
 export const User = model('user', userSchema);

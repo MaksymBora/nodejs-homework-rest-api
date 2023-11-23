@@ -7,7 +7,7 @@ import gravatar from 'gravatar';
 import path from 'path';
 // import { promises as fs } from 'fs';
 import { rename } from 'node:fs/promises';
-import Jimp from 'jimp';
+import { adjustingAvatar } from '../helpers/adjustAvatar.js';
 
 const { SECRET_KEY } = process.env;
 
@@ -123,24 +123,17 @@ export async function updateSubscription(req, res, next) {
 }
 
 // Update User's Avatar
-export const updateAvatar = async (req, res) => {
+export const updateAvatar = async (req, res, next) => {
   const { _id: user } = req.user;
 
+  if (req.file === undefined)
+    throw HttpError(404, 'Image was not found, check form-data values');
   const { path: tempUpload, originalname } = req.file;
 
   const filename = `${user}_${originalname}`;
-
   const resultUpload = path.join(avatarsDir, filename);
-
+  await adjustingAvatar(tempUpload);
   await rename(tempUpload, resultUpload);
-
-  Jimp.read(resultUpload)
-    .then(image => {
-      return image.resize(250, 250).write(`${avatarsDir}/250x250x${filename}`);
-    })
-    .catch(error => {
-      console.log(error);
-    });
 
   const avatarURL = path.join('avatars', filename);
 

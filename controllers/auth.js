@@ -9,7 +9,7 @@ import path from 'path';
 import { rename } from 'node:fs/promises';
 import { adjustingAvatar } from '../helpers/adjustAvatar.js';
 
-const { SECRET_KEY } = process.env;
+const { SECRET_KEY, BASE_URL } = process.env;
 
 const avatarsDir = path.resolve('public/avatars');
 
@@ -55,6 +55,14 @@ export const register = async (req, res, next) => {
       password: passwordHash,
       avatarURL,
     });
+
+    // const verifyEmail = {
+    //   to: email,
+    //   subject: 'Verify email',
+    //   html: `<a target="_blank" href="${BASE_URL}/api/auth/verify/1231232">Click verify email</a>`,
+    // };
+
+    // await sendEmail();
 
     generateToken(newUser, 201, res);
   } catch (error) {

@@ -27,9 +27,6 @@ const api = new ElasticEmail.EmailsApi();
 // };
 
 const email = {
-  Host: 'smtp.elasticemail.com',
-  Username: 'maxborassd@ukr.net',
-  Password: '0190361FE2AA9F4BDCA37C8E9494F2E65A71',
   Recipients: {
     To: ['maxboraod@gmail.com'],
   },

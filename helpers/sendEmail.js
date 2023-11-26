@@ -46,7 +46,7 @@ export const sendEmail = (mailTo, verificationCode) => {
           ContentType: 'HTML',
           Charset: 'utf-8',
           // Content: 'Your registration successfull!',
-          Content: `<a href="${BASE_URL}/api/auth/verify/${verificationCode}" target="_blank">Click verify email</a>`,
+          Content: `<a href="${BASE_URL}/users/verify/${verificationCode}" target="_blank">Click here to verify email</a>`,
         },
       ],
       From: EMAIL_FROM,
@@ -54,7 +54,7 @@ export const sendEmail = (mailTo, verificationCode) => {
     },
   };
 
-  return api.emailsTransactionalPost(email, callback);
+  api.emailsTransactionalPost(email, callback);
 };
 
 // sendEmail('maxboraod@gmail.com', 'asdasdasd231231321');

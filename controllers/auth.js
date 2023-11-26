@@ -1,5 +1,6 @@
 import * as bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { nanoid } from 'nanoid';
 import 'dotenv/config';
 import { User } from '../models/user.js';
 import { HttpError } from '../helpers/HttpError.js';
@@ -8,6 +9,7 @@ import path from 'path';
 // import { promises as fs } from 'fs';
 import { rename } from 'node:fs/promises';
 import { adjustingAvatar } from '../helpers/adjustAvatar.js';
+import { sendEmail } from '../helpers/sendEmail.js';
 
 const { SECRET_KEY, BASE_URL } = process.env;
 
@@ -50,24 +52,52 @@ export const register = async (req, res, next) => {
     const passwordHash = await bcrypt.hash(password, 10);
     const avatarURL = gravatar.url(email);
 
+    const verificationCode = nanoid();
+
     const newUser = await User.create({
       ...req.body,
       password: passwordHash,
       avatarURL,
+      verificationCode,
     });
 
-    // const verifyEmail = {
-    //   to: email,
-    //   subject: 'Verify email',
-    //   html: `<a target="_blank" href="${BASE_URL}/api/auth/verify/1231232">Click verify email</a>`,
-    // };
-
-    // await sendEmail();
+    await sendEmail(email, verificationCode);
 
     generateToken(newUser, 201, res);
   } catch (error) {
     next(error);
   }
+};
+
+export const verifyEmail = async (req, res) => {
+  const { verificationCode } = req.params;
+  const user = await User.findOne({ verificationCode });
+
+  if (!user) throw HttpError(401, 'User not found');
+
+  await User.findByIdAndUpdate(user._id, {
+    verify: true,
+    verificationCode: '',
+  });
+
+  res.json({
+    message: 'Email successfully verified ',
+  });
+};
+
+export const resendVerifyEmail = async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+
+  if (!user) throw HttpError(401, 'Email not found');
+
+  if (user.verify) throw HttpError(401, 'Email already verified');
+
+  await sendEmail(email, user.verificationCode);
+
+  res.json({
+    message: 'Verify email send success',
+  });
 };
 
 export const login = async (req, res, next) => {

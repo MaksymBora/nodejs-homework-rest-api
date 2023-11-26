@@ -4,11 +4,14 @@ import {
   login,
   logout,
   register,
+  resendVerifyEmail,
   updateAvatar,
   updateSubscription,
+  verifyEmail,
 } from '../../controllers/auth.js';
 import { authValidator } from '../../middlewares/bodyValidatorWrapper.js';
 import {
+  emailSchema,
   loginSchema,
   registerSchema,
   subscriprionSchema,
@@ -20,9 +23,15 @@ import { upload } from '../../middlewares/upload.js';
 
 const router = Router();
 
-router.post('/register', authValidator(registerSchema), register);
+router.post('/register', authValidator(registerSchema), ctrlWrapper(register));
+router.get('/verify/:verificationCode', ctrlWrapper(verifyEmail));
+router.post(
+  '/verify',
+  authValidator(emailSchema),
+  ctrlWrapper(resendVerifyEmail),
+);
 
-router.post('/login', authValidator(loginSchema), login);
+router.post('/login', authValidator(loginSchema), ctrlWrapper(login));
 
 router.get('/current', authenticate, ctrlWrapper(getCurrent));
 

@@ -32,11 +32,21 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    verify: {
+      type: Boolean,
+      default: false,
+    },
+    verificationCode: {
+      type: String,
+      default: '',
+    },
   },
   { timeseries: true, versionKey: false },
 );
 
 userSchema.post('save', handleMongooseError);
+
+// Joi Schema Validation
 
 export const registerSchema = Joi.object({
   email: Joi.string().pattern(emailRegexp).required().messages({
@@ -44,6 +54,12 @@ export const registerSchema = Joi.object({
   }),
   password: Joi.string().min(6).required(),
   subscription: Joi.string().valid(...subscriptionList),
+});
+
+export const emailSchema = Joi.object({
+  email: Joi.string().pattern(emailRegexp).required().messages({
+    'string.pattern.base': 'Email format must be - example@example.com',
+  }),
 });
 
 export const loginSchema = Joi.object({

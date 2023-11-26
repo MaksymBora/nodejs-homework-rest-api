@@ -25,8 +25,6 @@ A brief Guide for my Node.js web server's API endpoints:
 
 `Path: POST https://www.web4you.space/users/logout - Token is passed within the request.`
 
-<br>
-
 ### 5. Update user's Avatar
 
 `Path: PATCH https://www.web4you.space/users/avatars`

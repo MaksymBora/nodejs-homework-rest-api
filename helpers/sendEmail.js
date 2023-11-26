@@ -1,7 +1,7 @@
 import ElasticEmail from '@elasticemail/elasticemail-client';
 import 'dotenv/config';
 
-const { ELASTIC_API_KEY, EMAIL_FROM } = process.env;
+const { ELASTIC_API_KEY, EMAIL_FROM, BASE_URL } = process.env;
 
 const defaultClient = ElasticEmail.ApiClient.instance;
 const apikey = defaultClient.authentications['apikey'];
@@ -26,23 +26,6 @@ const api = new ElasticEmail.EmailsApi();
 //   },
 // };
 
-const email = {
-  Recipients: {
-    To: ['maxboraod@gmail.com'],
-  },
-  Content: {
-    Body: [
-      {
-        ContentType: 'HTML',
-        Charset: 'utf-8',
-        Content: 'Test Html Type!',
-      },
-    ],
-    From: EMAIL_FROM,
-    Subject: 'Test email',
-  },
-};
-
 const callback = function (error, data, response) {
   if (error) {
     console.error(error.message);
@@ -52,7 +35,29 @@ const callback = function (error, data, response) {
   }
 };
 
-api.emailsTransactionalPost(email, callback);
+export const sendEmail = (mailTo, verificationCode) => {
+  const email = {
+    Recipients: {
+      To: [mailTo],
+    },
+    Content: {
+      Body: [
+        {
+          ContentType: 'HTML',
+          Charset: 'utf-8',
+          // Content: 'Your registration successfull!',
+          Content: `<a href="${BASE_URL}/api/auth/verify/${verificationCode}" target="_blank">Click verify email</a>`,
+        },
+      ],
+      From: EMAIL_FROM,
+      Subject: 'Verify email',
+    },
+  };
+
+  return api.emailsTransactionalPost(email, callback);
+};
+
+// sendEmail('maxboraod@gmail.com', 'asdasdasd231231321');
 
 // import ElasticEmail from '@elasticemail/elasticemail-client';
 // import 'dotenv/config';

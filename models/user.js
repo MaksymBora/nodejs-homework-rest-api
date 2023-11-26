@@ -38,7 +38,7 @@ const userSchema = new Schema(
     },
     verificationToken: {
       type: String,
-      default: '',
+      default: null,
     },
   },
   { timeseries: true, versionKey: false },

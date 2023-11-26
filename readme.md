@@ -9,32 +9,38 @@ Path: POST https://www.web4you.space/users/register Request Body (JSON): ``
 <br>``
 { "password": "your password", "email": "example@email.com" } 
 ``
-2. User Verification
+<br>
+## 2. User Verification
 
 Path: POST https://www.web4you.space/users/register/users/verify Request Body
 (JSON): { "email": "email used during registration" }
 
-3.User Login
+<br>
+## 3.User Login
 
 Path: POST https://www.web4you.space/users/login Request Body (JSON): {
 "password": "your password", "email": "your email" };
 
-4. User Logout
+<br>
+## 4. User Logout
 
 Path: POST https://www.web4you.space/users/logout - Token is passed within the
 request.
 
-5. Update user's Avatar
+<br>
+## 5. Update user's Avatar
 
 Path: PATCH https://www.web4you.space/users/avatars Form-Data => key = "avatar"
 value = image file; and Authorization Token;
 
-6. Update type of Subscription
+<br>
+## 6. Update type of Subscription
 
 Path: PATCH https://www.web4you.space/users Request Body (JSON): {
 "subscription": "'starter', 'pro', 'business'"}; and Authorization Token;
 
-7. Get Current User Data
+<br>
+## 7. Get Current User Data
 
 Path: GET https://www.web4you.space/users/current Request Body (JSON): none;
 Token is passed within the request.

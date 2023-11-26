@@ -35,7 +35,7 @@ const callback = function (error, data, response) {
   }
 };
 
-export const sendEmail = (mailTo, verificationCode) => {
+export const sendEmail = (mailTo, verificationToken) => {
   const email = {
     Recipients: {
       To: [mailTo],
@@ -46,7 +46,7 @@ export const sendEmail = (mailTo, verificationCode) => {
           ContentType: 'HTML',
           Charset: 'utf-8',
           // Content: 'Your registration successfull!',
-          Content: `<a href="${BASE_URL}/users/verify/${verificationCode}" target="_blank">Click here to verify email</a>`,
+          Content: `<a href="${BASE_URL}/users/verify/${verificationToken}" target="_blank">Click here to verify email</a>`,
         },
       ],
       From: EMAIL_FROM,

@@ -52,16 +52,16 @@ export const register = async (req, res, next) => {
     const passwordHash = await bcrypt.hash(password, 10);
     const avatarURL = gravatar.url(email);
 
-    const verificationCode = nanoid();
+    const verificationToken = nanoid();
 
     const newUser = await User.create({
       ...req.body,
       password: passwordHash,
       avatarURL,
-      verificationCode,
+      verificationToken,
     });
 
-    await sendEmail(email, verificationCode);
+    await sendEmail(email, verificationToken);
 
     generateToken(newUser, 201, res);
   } catch (error) {
@@ -70,18 +70,19 @@ export const register = async (req, res, next) => {
 };
 
 export const verifyEmail = async (req, res) => {
-  const { verificationCode } = req.params;
-  const user = await User.findOne({ verificationCode });
+  const { verificationToken } = req.params;
 
-  if (!user) throw HttpError(401, 'User not found');
+  const user = await User.findOne({ verificationToken });
+
+  if (!user) throw HttpError(404, 'Link is not active');
 
   await User.findByIdAndUpdate(user._id, {
     verify: true,
-    verificationCode: '',
+    verificationToken: '',
   });
 
   res.json({
-    message: 'Email successfully verified ',
+    message: 'Email successfully verified',
   });
 };
 
@@ -93,10 +94,10 @@ export const resendVerifyEmail = async (req, res) => {
 
   if (user.verify) throw HttpError(401, 'Email already verified');
 
-  await sendEmail(email, user.verificationCode);
+  await sendEmail(email, user.verificationToken);
 
   res.json({
-    message: 'Verify email send success',
+    message: 'Email with verivication code sent successfully',
   });
 };
 

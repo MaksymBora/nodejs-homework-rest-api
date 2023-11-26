@@ -24,7 +24,7 @@ import { upload } from '../../middlewares/upload.js';
 const router = Router();
 
 router.post('/register', authValidator(registerSchema), ctrlWrapper(register));
-router.get('/verify/:verificationCode', ctrlWrapper(verifyEmail));
+router.get('/verify/:verificationToken', ctrlWrapper(verifyEmail));
 router.post(
   '/verify',
   authValidator(emailSchema),

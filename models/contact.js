@@ -1,6 +1,9 @@
 /* eslint-disable no-useless-escape */
 import { Schema, model } from 'mongoose';
-import { handleMongooseError } from '../helpers/handleMongooseError.js';
+import {
+  handleMongooseError,
+  handleUpdateValidate,
+} from '../helpers/handleMongooseError.js';
 import joi from 'joi';
 import { contactValidator } from '../middlewares/bodyValidatorWrapper.js';
 
@@ -33,10 +36,12 @@ const contactSchema = new Schema(
   { versionKey: false, timestamps: true },
 );
 
+contactSchema.pre('findOneAndUpdate', handleUpdateValidate);
 contactSchema.post('save', handleMongooseError);
+contactSchema.post('findOneAndUpdate', handleMongooseError);
 
 // Joi
-export const contactSchemaJoi = joi.object({
+const contactSchemaJoi = joi.object({
   name: joi.string().min(2).required(),
   email: joi.string().pattern(emailRegexp).required().messages({
     'string.pattern.base': 'Email format must be - example@example.com',

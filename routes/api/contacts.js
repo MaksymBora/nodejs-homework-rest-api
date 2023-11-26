@@ -11,29 +11,31 @@ import { isValidId } from '../../middlewares/isValidId.js';
 import { authenticate } from '../../middlewares/authenticate.js';
 import { userVerify } from '../../middlewares/userVerify.js';
 
-const router = Router();
+const contactsRouter = Router();
 
-router.get('/', authenticate, getAll);
+contactsRouter.use(authenticate);
+
+// Get all contacts
+contactsRouter.get('/', getAll);
 
 // Get contact by ID
-router.get('/:contactId', authenticate, isValidId, getById);
+contactsRouter.get('/:contactId', isValidId, getById);
 
 // Add new Contact
-router.post('/', authenticate, add);
+contactsRouter.post('/', add);
 
 // Update contact's information
-router.put('/:contactId', authenticate, userVerify, isValidId, updateById);
+contactsRouter.put('/:contactId', userVerify, isValidId, updateById);
 
 // Update contact Status by ID
-router.patch(
+contactsRouter.patch(
   '/:contactId/favorite',
-  authenticate,
   userVerify,
   isValidId,
   updateFavorite,
 );
 
 // Delete Contact
-router.delete('/:contactId', authenticate, userVerify, removeContactById);
+contactsRouter.delete('/:contactId', userVerify, removeContactById);
 
-export default router;
+export default contactsRouter;

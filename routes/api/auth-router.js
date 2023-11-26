@@ -1,14 +1,5 @@
 import { Router } from 'express';
-import {
-  getCurrent,
-  login,
-  logout,
-  register,
-  resendVerifyEmail,
-  updateAvatar,
-  updateSubscription,
-  verifyEmail,
-} from '../../controllers/auth.js';
+import authConroller from '../../controllers/auth-controller.js';
 import { authValidator } from '../../middlewares/bodyValidatorWrapper.js';
 import {
   emailSchema,
@@ -23,33 +14,41 @@ import { upload } from '../../middlewares/upload.js';
 
 const router = Router();
 
-router.post('/register', authValidator(registerSchema), ctrlWrapper(register));
-router.get('/verify/:verificationToken', ctrlWrapper(verifyEmail));
+// Signup
+router.post('/register', authValidator(registerSchema), authConroller.signup);
+
+// Verify Email
+router.get('/verify/:verificationToken', authConroller.verify);
+
+// Resend Verification Email
 router.post(
   '/verify',
   authValidator(emailSchema),
-  ctrlWrapper(resendVerifyEmail),
+  authConroller.resendVerifyEmail,
 );
 
-router.post('/login', authValidator(loginSchema), ctrlWrapper(login));
+// Login
+router.post('/login', authValidator(loginSchema), authConroller.signin);
 
-router.get('/current', authenticate, ctrlWrapper(getCurrent));
+// Check current user if token is available
+router.get('/current', authenticate, authConroller.getCurrent);
 
-router.post('/logout', authenticate, logout);
+// Logout
+router.post('/logout', authenticate, authConroller.signout);
 
 router.patch(
   '/avatars',
   authenticate,
   authValidator(updateAvatarSchema),
   upload.single('avatar'),
-  ctrlWrapper(updateAvatar),
+  authConroller.updateAvatar,
 );
 
 router.patch(
   '/',
   authenticate,
   authValidator(subscriprionSchema),
-  ctrlWrapper(updateSubscription),
+  authConroller.updateSubscription,
 );
 
 export default router;

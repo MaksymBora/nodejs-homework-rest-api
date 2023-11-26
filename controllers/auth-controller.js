@@ -6,16 +6,17 @@ import { User } from '../models/user.js';
 import { HttpError } from '../helpers/HttpError.js';
 import gravatar from 'gravatar';
 import path from 'path';
-// import { promises as fs } from 'fs';
 import { rename } from 'node:fs/promises';
 import { adjustingAvatar } from '../helpers/adjustAvatar.js';
 import { sendEmail } from '../helpers/sendEmail.js';
+import { ctrlWrapper } from '../helpers/ctrlWrapper.js';
 
-const { SECRET_KEY, BASE_URL } = process.env;
+const { SECRET_KEY } = process.env;
 
 const avatarsDir = path.resolve('public/avatars');
 
-export const register = async (req, res, next) => {
+// Registration
+const register = async (req, res, next) => {
   const { password, email } = req.body;
 
   const generateToken = async (newUser, statusCode, res) => {
@@ -69,7 +70,8 @@ export const register = async (req, res, next) => {
   }
 };
 
-export const verifyEmail = async (req, res) => {
+// Verify Email
+const verifyEmail = async (req, res) => {
   const { verificationToken } = req.params;
 
   const user = await User.findOne({ verificationToken });
@@ -86,7 +88,8 @@ export const verifyEmail = async (req, res) => {
   });
 };
 
-export const resendVerifyEmail = async (req, res) => {
+// Resend Email with Verification Token
+const resendVerifyEmail = async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ email });
 
@@ -101,7 +104,8 @@ export const resendVerifyEmail = async (req, res) => {
   });
 };
 
-export const login = async (req, res, next) => {
+// Login
+const login = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
@@ -132,20 +136,22 @@ export const login = async (req, res, next) => {
   }
 };
 
-export const getCurrent = async (req, res) => {
+// Check current user's token
+const getCurrent = async (req, res) => {
   const { email, subscription } = req.user;
 
   res.json({ email, subscription });
 };
 
-export const logout = async (req, res) => {
+// Logout
+const logout = async (req, res) => {
   const { _id } = req.user;
   await User.findByIdAndUpdate(_id, { token: null });
 
   res.status(204).send();
 };
 
-export async function updateSubscription(req, res, next) {
+async function updateSubscription(req, res, next) {
   const { _id: user } = req.user;
 
   const userSubscription = await User.findByIdAndUpdate(user, req.body, {
@@ -163,7 +169,7 @@ export async function updateSubscription(req, res, next) {
 }
 
 // Update User's Avatar
-export const updateAvatar = async (req, res, next) => {
+const updateAvatar = async (req, res, next) => {
   const { _id: user } = req.user;
 
   if (req.file === undefined)
@@ -182,4 +188,13 @@ export const updateAvatar = async (req, res, next) => {
   res.json({ avatarURL });
 };
 
-// export default login;
+export default {
+  signup: ctrlWrapper(register),
+  verify: ctrlWrapper(verifyEmail),
+  resendVerifyEmail: ctrlWrapper(resendVerifyEmail),
+  signin: ctrlWrapper(login),
+  getCurrent: ctrlWrapper(getCurrent),
+  signout: ctrlWrapper(logout),
+  updateSubscription: ctrlWrapper(updateSubscription),
+  updateAvatar: ctrlWrapper(updateAvatar),
+};

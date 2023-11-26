@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import contactsController from '../../controllers/contactsController.js';
+import contactsController from '../../controllers/contacts-controller.js';
 import { isValidId } from '../../middlewares/isValidId.js';
 import authenticate from '../../middlewares/authenticate.js';
 import { userVerify } from '../../middlewares/userVerify.js';

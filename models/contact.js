@@ -1,14 +1,7 @@
 /* eslint-disable no-useless-escape */
 import { Schema, model } from 'mongoose';
-import {
-  handleMongooseError,
-  handleUpdateValidate,
-} from '../helpers/handleMongooseError.js';
-import joi from 'joi';
-import { contactValidator } from '../middlewares/bodyValidatorWrapper.js';
-
-const phoneRegex = /^[0-9]{10}$/; // max length 10 characters
-const emailRegexp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; // example@example.com
+import { handleMongooseError } from '../helpers/handleMongooseError.js';
+import { phoneRegex } from '../constans/contacts-constans.js';
 
 const contactSchema = new Schema(
   {
@@ -36,27 +29,8 @@ const contactSchema = new Schema(
   { versionKey: false, timestamps: true },
 );
 
-contactSchema.pre('findOneAndUpdate', handleUpdateValidate);
+// contactSchema.pre('findOneAndUpdate', handleUpdateValidate);
 contactSchema.post('save', handleMongooseError);
-contactSchema.post('findOneAndUpdate', handleMongooseError);
-
-// Joi
-const contactSchemaJoi = joi.object({
-  name: joi.string().min(2).required(),
-  email: joi.string().pattern(emailRegexp).required().messages({
-    'string.pattern.base': 'Email format must be - example@example.com',
-  }),
-  phone: joi.string().pattern(phoneRegex).required().messages({
-    'string.pattern.base': 'Phone format must be - max 10 characters',
-  }),
-  favorite: joi.boolean().default(false),
-});
-
-const updateFavoriteSchema = joi.object({
-  favorite: joi.boolean().required(),
-});
-
-export const contactValidate = contactValidator(contactSchemaJoi);
-export const favoriteValidate = contactValidator(updateFavoriteSchema);
+// contactSchema.post('findOneAndUpdate', handleMongooseError);
 
 export const Contact = model('contact', contactSchema);

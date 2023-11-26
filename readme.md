@@ -4,8 +4,7 @@ A brief Guide for my Node.js web server's API endpoints:
 
 1. User Registration
 
-Path: POST https://www.web4you.space/users/register Request Body (JSON): {
-"password": "your password", "email": "example@email.com" }
+`rust Path: POST https://www.web4you.space/users/register Request Body (JSON): { "password": "your password", "email": "example@email.com" } `
 
 2. User Verification
 

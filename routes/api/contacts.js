@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import contactsController from '../../controllers/contactsController.js';
 import { isValidId } from '../../middlewares/isValidId.js';
-import { authenticate } from '../../middlewares/authenticate.js';
+import authenticate from '../../middlewares/authenticate.js';
 import { userVerify } from '../../middlewares/userVerify.js';
 import { bodyValidator } from '../../middlewares/bodyValidatorWrapper.js';
 import contactsSchemas from '../../schemas/contacts-schemas.js';

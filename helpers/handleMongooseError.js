@@ -3,8 +3,3 @@ export const handleMongooseError = (error, data, next) => {
   error.status = code === 11000 && name === 'MongoServerError' ? 409 : 400;
   next();
 };
-
-export const handleUpdateValidate = next => {
-  this.options.runValidators = true;
-  next();
-};

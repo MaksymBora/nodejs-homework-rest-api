@@ -17,7 +17,7 @@ import {
   subscriprionSchema,
   updateAvatarSchema,
 } from '../../models/user.js';
-import { authenticate } from '../../middlewares/authenticate.js';
+import authenticate from '../../middlewares/authenticate.js';
 import { ctrlWrapper } from '../../helpers/ctrlWrapper.js';
 import { upload } from '../../middlewares/upload.js';
 

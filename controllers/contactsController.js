@@ -47,9 +47,11 @@ async function addContact(req, res) {
   const { _id: owner } = req.user;
 
   const contact = await Contact.create({ ...req.body, owner });
+
   const { _id, name, email, phone, favorite } = contact;
 
   if (!contact) res.status(400).json({ message: 'missing required fields' });
+
   res.status(201).json({ _id, name, email, phone, favorite });
 }
 

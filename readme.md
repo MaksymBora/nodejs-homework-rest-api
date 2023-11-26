@@ -41,6 +41,8 @@ A brief Guide for my Node.js web server's API endpoints:
 
 ## API Documentation to work with Contacts
 
+<br>
+
 ### 1. Get Current User Data
 
 `Path: GET https://www.web4you.space/users/current`
@@ -60,13 +62,11 @@ A brief Guide for my Node.js web server's API endpoints:
 
 `Path: POST https://www.web4you.space/api/contacts`
 <br>`{"name": "contact name", "email": "example@email.com", "phone": "max 10 figures"}; and Authorization Token;`
-<br>
 
 ### 5. Update contact's information
 
 `Path: PUT https://www.web4you.space/api/contacts/:contactId`
 <br>`{"name": "contact name", "email": "example@email.com", "phone": "max 10 figures"}; and Authorization Token;`
-<br>
 
 ### 6. Update contact's Status (favorite)
 

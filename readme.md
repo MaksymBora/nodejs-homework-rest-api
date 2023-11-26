@@ -12,7 +12,7 @@ A brief Guide for my Node.js web server's API endpoints:
 ### 2. User Verification
 
 `Path: POST https://www.web4you.space/users/register/users/verify Request Body (JSON):`
-<br>`{ "email": "email used during registration" }` <br>
+<br>`{ "email": "email used during registration" }`
 
 ### 3. User Login
 

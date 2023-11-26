@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { handleMongooseError } from '../helpers/handleMongooseError.js';
+import { handleMongooseError } from './hooks.js';
 import { emailRegexp, subscriptionList } from '../constans/user-constans.js';
 
 const userSchema = new Schema(

@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-escape */
 import { Schema, model } from 'mongoose';
-import { handleMongooseError } from '../helpers/handleMongooseError.js';
+import { handleMongooseError } from './hooks.js';
 import { phoneRegex } from '../constans/contacts-constans.js';
 
 const contactSchema = new Schema(

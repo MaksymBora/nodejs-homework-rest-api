@@ -3,7 +3,7 @@ import contactsController from '../../controllers/contacts-controller.js';
 import { isValidId } from '../../middlewares/isValidId.js';
 import authenticate from '../../middlewares/authenticate.js';
 import { userVerify } from '../../middlewares/userVerify.js';
-import { bodyValidator } from '../../middlewares/bodyValidatorWrapper.js';
+import { bodyValidator } from '../../decorators/bodyValidatorWrapper.js';
 import contactsSchemas from '../../schemas/contacts-schemas.js';
 
 const contactsRouter = Router();

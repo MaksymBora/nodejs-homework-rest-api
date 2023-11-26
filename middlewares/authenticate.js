@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { HttpError } from '../helpers/HttpError.js';
 import { User } from '../models/user.js';
-import { ctrlWrapper } from '../helpers/ctrlWrapper.js';
+import { ctrlWrapper } from '../decorators/ctrlWrapper.js';
 
 const { SECRET_KEY } = process.env;
 

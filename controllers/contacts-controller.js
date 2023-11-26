@@ -1,6 +1,6 @@
 import { Contact } from '../models/contact.js';
 import 'colors';
-import { ctrlWrapper } from '../helpers/ctrlWrapper.js';
+import { ctrlWrapper } from '../decorators/ctrlWrapper.js';
 import { HttpError } from '../helpers/HttpError.js';
 
 // ============= Get full list of contacts ================ //

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import authConroller from '../../controllers/auth-controller.js';
-import { bodyValidator } from '../../middlewares/bodyValidatorWrapper.js';
+import { bodyValidator } from '../../decorators/bodyValidatorWrapper.js';
 import usersSchemas from '../../schemas/user-schemas.js';
 import authenticate from '../../middlewares/authenticate.js';
 import { upload } from '../../middlewares/upload.js';

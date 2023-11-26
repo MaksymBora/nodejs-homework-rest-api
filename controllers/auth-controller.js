@@ -9,7 +9,7 @@ import path from 'path';
 import { rename } from 'node:fs/promises';
 import { adjustingAvatar } from '../helpers/adjustAvatar.js';
 import { sendEmail } from '../helpers/sendEmail.js';
-import { ctrlWrapper } from '../helpers/ctrlWrapper.js';
+import { ctrlWrapper } from '../decorators/ctrlWrapper.js';
 
 const { SECRET_KEY } = process.env;
 

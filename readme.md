@@ -19,8 +19,6 @@ A brief Guide for my Node.js web server's API endpoints:
 `Path: POST https://www.web4you.space/users/login Request Body (JSON):`
 <br>`{"password": "your password", "email": "your email" };`
 
-<br>
-
 ### 4. User Logout
 
 `Path: POST https://www.web4you.space/users/logout - Token is passed within the request.`

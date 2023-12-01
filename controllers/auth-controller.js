@@ -37,6 +37,7 @@ const register = async (req, res, next) => {
       data: {
         user: {
           email: newUser.email,
+          name: newUser.name,
           subscription: newUser.subscription,
         },
         token,

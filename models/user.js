@@ -15,6 +15,10 @@ const userSchema = new Schema(
       index: true,
       unique: true,
     },
+    name: {
+      type: String,
+      required: true,
+    },
     subscription: {
       type: String,
       enum: subscriptionList,

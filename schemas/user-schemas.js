@@ -7,6 +7,7 @@ const registerSchema = Joi.object({
   }),
   password: Joi.string().min(6).required(),
   subscription: Joi.string().valid(...subscriptionList),
+  name: Joi.string().required(),
 });
 
 const emailSchema = Joi.object({

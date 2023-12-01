@@ -31,18 +31,24 @@ const register = async (req, res, next) => {
     const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '23h' });
     await User.findByIdAndUpdate(user._id, { token });
 
+    // res.status(statusCode).json({
+    //   status: 'success',
+    //   code: statusCode,
+    //   data: {
+    //     user: {
+    //       email: newUser.email,
+    //       name: newUser.name,
+    //       subscription: newUser.subscription,
+    //     },
+    //     token,
+    //     avatarURL: newUser.avatarURL,
+    //   },
+    // });
+
     res.status(statusCode).json({
       status: 'success',
       code: statusCode,
-      data: {
-        user: {
-          email: newUser.email,
-          name: newUser.name,
-          subscription: newUser.subscription,
-        },
-        token,
-        avatarURL: newUser.avatarURL,
-      },
+      message: 'Verification Email Sent On Your Email',
     });
   };
 

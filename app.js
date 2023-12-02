@@ -3,6 +3,7 @@ import logger from 'morgan';
 import cors from 'cors';
 import contactsRouter from './routes/api/contacts-router.js';
 import userRouter from './routes/api/auth-router.js';
+import moviesRouter from './routes/api/movies-router.js';
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(express.static('public'));
 
 app.use('/api/contacts', contactsRouter);
 app.use('/users', userRouter);
+app.use('/favorite', moviesRouter);
 
 app.use((_, res) => {
   res.status(404).json({ message: 'Not found!' });

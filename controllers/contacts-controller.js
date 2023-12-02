@@ -84,7 +84,7 @@ async function updateStatusContact(req, res, next) {
 }
 
 // ============== Delete contact by ID ==================== //
-async function removeContact(req, res, next) {
+async function removeContact(req, res) {
   const { contactId } = req.params;
 
   await Contact.findByIdAndDelete(contactId);

@@ -4,26 +4,28 @@ import { Movies } from '../models/movies.js';
 
 // ============ Get List of Favorites Movies ================ //
 
-async function moviesList(req, res) {
+async function moviesList(req, res, next) {
   const { _id: owner } = req.user;
+  console.log(owner);
 
   let query = { owner };
 
-  const data = await Movies.find(query, '-createdAt -updatedAt').populate(
-    'owner',
-  );
+  const data = await Movies.find(query, '-createdAt -updatedAt -owner');
 
+  if (!data) return next();
   res.json(data);
 }
-
 // ============ Add in Favorite List ================ //
 
 async function addMovie(req, res) {
   const { _id: owner } = req.user;
 
-  await Movies.create({ ...req.body, owner });
+  const data = await Movies.create({ ...req.body, owner });
 
-  res.status(201).json({ message: 'movie added' });
+  const { name, poster, date, movieId, rating, type, _id } = data;
+
+  const responseObj = { name, poster, date, movieId, rating, type, _id };
+  res.status(201).json(responseObj);
 }
 
 export default {

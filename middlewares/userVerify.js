@@ -1,7 +1,7 @@
 import { Contact } from '../models/contact.js';
 import { HttpError } from '../helpers/HttpError.js';
 
-export const userVerify = async (req, res, next) => {
+export const userVerify = async (req, _, next) => {
   const { contactId } = req.params;
   const { _id } = req.user;
 

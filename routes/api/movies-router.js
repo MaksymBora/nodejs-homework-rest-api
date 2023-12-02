@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import authenticate from '../../middlewares/authenticate.js';
 import moviesController from '../../controllers/movies-controller.js';
-import { userVerify } from '../../middlewares/userVerify.js';
+import { movieVerify } from '../../middlewares/movieVerify.js';
 
 const moviesRouter = Router();
 
@@ -14,6 +14,6 @@ moviesRouter.get('/', moviesController.getAll);
 moviesRouter.post('/', moviesController.addInFav);
 
 // Remove movie from favorite List
-moviesRouter.delete('/:movieId', moviesController.remove);
+moviesRouter.delete('/:movieId', movieVerify, moviesController.remove);
 
 export default moviesRouter;

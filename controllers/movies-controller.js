@@ -28,7 +28,16 @@ async function addMovie(req, res) {
   res.status(201).json(responseObj);
 }
 
+async function removeFromList(req, res) {
+  const { movieId } = req.params;
+
+  await Movies.findByIdAndDelete(movieId);
+
+  res.status(200).json({ message: 'Movie removed from list' });
+}
+
 export default {
   getAll: ctrlWrapper(moviesList),
   addInFav: ctrlWrapper(addMovie),
+  remove: ctrlWrapper(removeFromList),
 };

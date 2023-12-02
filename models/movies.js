@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
 import { handleMongooseError } from './hooks.js';
+import { movieTypes } from '../constans/movies.js';
 
 const moviesSchema = new Schema(
   {
@@ -17,7 +18,7 @@ const moviesSchema = new Schema(
       default: 'No date',
     },
     movieId: {
-      type: String,
+      type: Number,
       required: true,
     },
     rating: {
@@ -26,7 +27,7 @@ const moviesSchema = new Schema(
     },
     type: {
       type: String,
-      default: 'movie',
+      enum: movieTypes,
     },
     owner: {
       type: Schema.Types.ObjectId,

@@ -6,7 +6,6 @@ import { Movies } from '../models/movies.js';
 
 async function moviesList(req, res, next) {
   const { _id: owner } = req.user;
-  console.log(owner);
 
   let query = { owner };
 
@@ -26,6 +25,7 @@ async function addMovie(req, res) {
 
   const responseObj = { name, poster, date, movieId, rating, type, _id };
   res.status(201).json(responseObj);
+  console.log('----------------');
 }
 
 async function removeFromList(req, res) {
@@ -34,6 +34,7 @@ async function removeFromList(req, res) {
   await Movies.findByIdAndDelete(movieId);
 
   res.status(200).json({ message: 'Movie removed from list' });
+  console.log('----------------');
 }
 
 export default {

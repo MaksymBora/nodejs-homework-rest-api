@@ -48,7 +48,7 @@ const register = async (req, res, next) => {
     res.status(statusCode).json({
       status: 'success',
       code: statusCode,
-      message: 'Verification Email Sent On Your Email',
+      message: 'Verification Email has been Sent On Your Email',
     });
   };
 
@@ -119,7 +119,10 @@ const login = async (req, res, next) => {
     const user = await User.findOne({ email }).exec();
 
     if (!user) throw HttpError(401, 'Email or password is wrong');
-    if (!user.verify) throw HttpError(401, 'Email is not verified!');
+    if (!user.verify) {
+      // throw HttpError(401, 'Email is not verified!');
+      res.status(401).json({ message: 'Email is not verified !' });
+    }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
@@ -136,7 +139,11 @@ const login = async (req, res, next) => {
 
     res.status(200).json({
       token,
-      user: { email: user.email, subscription: user.subscription },
+      user: {
+        email: user.email,
+        subscription: user.subscription,
+        name: user.name,
+      },
     });
   } catch (error) {
     next(error);
@@ -145,9 +152,9 @@ const login = async (req, res, next) => {
 
 // Check current user's token
 const getCurrent = async (req, res) => {
-  const { email, subscription } = req.user;
+  const { email, subscription, name } = req.user;
 
-  res.json({ email, subscription });
+  res.json({ email, subscription, name });
 };
 
 // Logout

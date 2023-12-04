@@ -58,7 +58,7 @@ const register = async (req, res, next) => {
     if (user) throw HttpError(409, 'Email in use');
 
     const passwordHash = await bcrypt.hash(password, 10);
-    const avatarURL = gravatar.url(email);
+    const avatarURL = '/avatars/defaultAva.png';
 
     const verificationToken = nanoid();
 
@@ -184,7 +184,7 @@ async function updateSubscription(req, res, next) {
 }
 
 // Update User's Avatar
-const updateAvatar = async (req, res, next) => {
+const updateAvatar = async (req, res) => {
   const { _id: user } = req.user;
 
   if (req.file === undefined)

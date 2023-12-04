@@ -143,6 +143,7 @@ const login = async (req, res, next) => {
         email: user.email,
         subscription: user.subscription,
         name: user.name,
+        avatar: user.avatarURL,
       },
     });
   } catch (error) {
@@ -152,9 +153,9 @@ const login = async (req, res, next) => {
 
 // Check current user's token
 const getCurrent = async (req, res) => {
-  const { email, subscription, name } = req.user;
+  const { email, subscription, name, avatarURL } = req.user;
 
-  res.json({ email, subscription, name });
+  res.json({ email, subscription, name, avatar: avatarURL });
 };
 
 // Logout
@@ -199,7 +200,7 @@ const updateAvatar = async (req, res, next) => {
 
   await User.findByIdAndUpdate(user, { avatarURL });
 
-  res.json({ avatarURL });
+  res.json({ avatar: avatarURL });
 };
 
 export default {

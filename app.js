@@ -27,7 +27,7 @@ const options = {
     },
     servers: [
       {
-        url: 'http://web4you.space/',
+        url: 'https://web4you.space/',
       },
     ],
   },

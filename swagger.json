@@ -411,10 +411,7 @@
       },
       "logoutRequest": {
         "type": "object",
-        "properties": {},
-        "example": {
-          "token": "user's Bearer Token"
-        }
+        "properties": {}
       },
       "logoutResponse": {
         "type": "object",

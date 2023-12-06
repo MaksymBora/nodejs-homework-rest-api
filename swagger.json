@@ -19,7 +19,7 @@
       "url": "http://localhost:3000/"
     }
   ],
-  "schemas": ["http", "https"],
+  "schemes": ["http", "https"],
   "tags": [
     {
       "name": "Users",
@@ -107,15 +107,8 @@
       "post": {
         "tags": ["Users"],
         "summary": "User logout",
-        "parameters": [
-          {
-            "in": "header",
-            "name": "authorizationToken",
-            "required": true,
-            "type": "string",
-            "description": "User's verificationToken"
-          }
-        ],
+        "description": "",
+        "parameters": [],
         "security": [
           {
             "Bearer": []
@@ -124,6 +117,14 @@
         "responses": {
           "204": {
             "description": "User Logout",
+            "content": {}
+          },
+          "401": {
+            "description": "Not authorized ",
+            "content": {}
+          },
+          "403": {
+            "description": "Invalid authorization ",
             "content": {}
           },
           "404": {
@@ -274,13 +275,6 @@
     }
   },
   "components": {
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "JWT"
-      }
-    },
     "schemas": {
       "RegistrationRequest": {
         "type": "object",
@@ -468,6 +462,13 @@
             "description": "User avatar"
           }
         }
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     }
   }

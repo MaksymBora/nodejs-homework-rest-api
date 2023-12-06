@@ -8,8 +8,14 @@ const { SECRET_KEY } = process.env;
 const authenticate = async (req, res, next) => {
   const { authorization = '' } = req.headers;
 
+  if (
+    authorization === '' ||
+    authorization === undefined ||
+    authorization === null
+  )
+    throw HttpError(403, 'Invalid authorization');
+
   const [bearer, token] = authorization.split(' ');
-  console.log(req.headers.authorization);
 
   if (bearer !== 'Bearer') {
     HttpError(401), 'Not authorized';
@@ -32,3 +38,11 @@ const authenticate = async (req, res, next) => {
 };
 
 export default ctrlWrapper(authenticate);
+
+// {
+//           "in": "header",
+//           "name": "Authorization",
+//           "required": true,
+//           "type": "string",
+//           "description": "The token issued to the current user."
+//         }

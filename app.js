@@ -42,7 +42,6 @@ const options = {
 };
 
 // const spacs = swaggerJsdoc(options);
-app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use(logger(formatsLogger));
 app.use(cors());
@@ -52,6 +51,8 @@ app.use(express.static('public'));
 app.use('/api/contacts', contactsRouter);
 app.use('/users', userRouter);
 app.use('/favorite', moviesRouter);
+
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use((_, res) => {
   res.status(404).json({ message: 'Not found!' });

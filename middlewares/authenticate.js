@@ -38,33 +38,3 @@ const authenticate = async (req, res, next) => {
 };
 
 export default ctrlWrapper(authenticate);
-
-// "securitySchemes": {
-//       "Bearer": {
-//         "type": "http",
-//         "scheme": "bearer",
-//         "bearerFormat": "JWT"
-//       }
-//     }
-
-// "security": [
-//           {
-//             "Bearer": []
-//           }
-//         ],
-
-// {
-//         "in": "header",
-//         "name": "Authorization",
-//         "required": true,
-//         "type": "string",
-//         "description": "The token issued to the current user."
-//       }
-
-//  {
-//             "in": "header",
-//             "name": "Authorization",
-//             "required": true,
-//             "type": "string",
-//             "description": "The token issued to the current user."
-//           }

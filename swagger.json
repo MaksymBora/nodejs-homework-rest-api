@@ -405,10 +405,6 @@
           "message": "Verification email sent"
         }
       },
-      "logoutRequest": {
-        "type": "object",
-        "properties": {}
-      },
       "logoutResponse": {
         "type": "object",
         "properties": {},

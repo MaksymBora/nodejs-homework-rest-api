@@ -5,7 +5,6 @@ import { readFileSync } from 'fs';
 import contactsRouter from './routes/api/contacts-router.js';
 import userRouter from './routes/api/auth-router.js';
 import moviesRouter from './routes/api/movies-router.js';
-import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 
 const rawdata = readFileSync('./swagger.json');

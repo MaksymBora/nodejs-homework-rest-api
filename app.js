@@ -1,11 +1,15 @@
 import express, { json } from 'express';
 import logger from 'morgan';
 import cors from 'cors';
+import { readFileSync } from 'fs';
 import contactsRouter from './routes/api/contacts-router.js';
 import userRouter from './routes/api/auth-router.js';
 import moviesRouter from './routes/api/movies-router.js';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+
+const rawdata = readFileSync('./swagger.json');
+const swaggerDocument = JSON.parse(rawdata);
 
 const app = express();
 
@@ -29,13 +33,16 @@ const options = {
       {
         url: 'https://web4you.space/',
       },
+      {
+        url: 'http://localhost:3000/',
+      },
     ],
   },
   apis: ['./routes/api/*.js'],
 };
 
-const spacs = swaggerJsdoc(options);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(spacs));
+// const spacs = swaggerJsdoc(options);
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use(logger(formatsLogger));
 app.use(cors());

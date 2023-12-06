@@ -7,6 +7,38 @@ import { upload } from '../../middlewares/upload.js';
 
 const router = Router();
 
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *    Users:
+ *      type: object
+ *      example: 'OrderedMap { "name": "John", "email": "john@example.com", "password": "exampleqwe12345" }'   # Example of a parameter value
+ *      required:
+ *        - email
+ *        - password
+ *        - name
+ *      properties:
+ *        _id:
+ *          type: string
+ *          description: Backend-generated unique identifier
+ *        email:
+ *          type: string
+ *          description: E-mail address.
+ *        name:
+ *          type: string
+ *          description: Username
+ *        password:
+ *          type: string
+ *          description: Password
+ *        avatar:
+ *          type: string
+ *          description: Default user avatar, but you can change it
+ *
+ *
+ *
+ */
+
 // Signup
 router.post(
   '/register',

@@ -4,7 +4,7 @@ import { nanoid } from 'nanoid';
 import 'dotenv/config';
 import { User } from '../models/user.js';
 import { HttpError } from '../helpers/HttpError.js';
-import gravatar from 'gravatar';
+// import gravatar from 'gravatar';
 import path from 'path';
 import { rename } from 'node:fs/promises';
 import { adjustingAvatar } from '../helpers/adjustAvatar.js';
@@ -126,7 +126,7 @@ const login = async (req, res, next) => {
 
     const isMatch = await bcrypt.compare(password, user.password);
 
-    if (!isMatch) throw HttpError(401, 'Email or password is wrong');
+    if (!isMatch) throw HttpError(403, 'Email or password is wrong');
 
     const payload = {
       id: user._id,
@@ -166,6 +166,7 @@ const logout = async (req, res) => {
   res.status(204).send();
 };
 
+// Update subscription
 async function updateSubscription(req, res, next) {
   const { _id: user } = req.user;
 

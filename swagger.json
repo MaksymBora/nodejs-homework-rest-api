@@ -13,13 +13,12 @@
   "produces": ["application/json"],
   "servers": [
     {
-      "url": "https://web4you.space"
+      "url": "https://web4you.space/"
     },
     {
       "url": "http://localhost:3000/"
     }
   ],
-  "schemes": ["http", "https"],
   "tags": [
     {
       "name": "Users",
